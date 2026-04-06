@@ -29,12 +29,12 @@ class BarangController extends ApiController
             ->paginate($perPage)
             ->appends($request->query());
 
-        $items = collect($paginator->items())->map(function (Barang $barang) {
+        $items = collect($paginator->items())->map(function (Barang $barang) use ($request) {
             return [
                 'id' => $barang->id,
                 'nama_barang' => $barang->nama_barang,
                 'foto' => $barang->foto,
-                'foto_url' => $barang->foto ? asset('storage/' . $barang->foto) : null,
+                'foto_url' => $this->storageUrl($request, $barang->foto),
                 'kategori' => $barang->kategori,
                 'satuan' => $barang->satuan,
                 'stock' => $barang->stock,
@@ -53,7 +53,7 @@ class BarangController extends ApiController
         ], 'Data barang berhasil diambil.');
     }
 
-    public function show(int $id)
+    public function show(Request $request, int $id)
     {
         $barang = Barang::query()
             ->select(['id', 'nama_barang', 'foto', 'kategori_id', 'satuan_id', 'created_at', 'updated_at'])
@@ -73,12 +73,21 @@ class BarangController extends ApiController
             'id' => $barang->id,
             'nama_barang' => $barang->nama_barang,
             'foto' => $barang->foto,
-            'foto_url' => $barang->foto ? asset('storage/' . $barang->foto) : null,
+            'foto_url' => $this->storageUrl($request, $barang->foto),
             'kategori' => $barang->kategori,
             'satuan' => $barang->satuan,
             'stock' => $barang->stock,
             'created_at' => optional($barang->created_at)->toIso8601String(),
             'updated_at' => optional($barang->updated_at)->toIso8601String(),
         ], 'Detail barang berhasil diambil.');
+    }
+
+    private function storageUrl(Request $request, ?string $path): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+
+        return rtrim($request->getSchemeAndHttpHost(), '/') . '/storage/' . ltrim($path, '/');
     }
 }

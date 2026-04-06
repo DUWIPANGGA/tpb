@@ -14,9 +14,11 @@ class TransaksiController extends ApiController
     public function permohonanIndex(Request $request)
     {
         $user = $request->user();
-        $perPage = max(1, min((int) $request->query('per_page', 10), 50));
+        $perPage = max(1, min((int) $request->query('per_page', 10), 200));
+        $scope = strtolower((string) $request->query('scope', 'self'));
+        $globalScope = $scope === 'global';
 
-        $paginator = Permohonan::query()
+        $query = Permohonan::query()
             ->select([
                 'id',
                 'unit_kerja',
@@ -32,18 +34,23 @@ class TransaksiController extends ApiController
                 'created_at',
                 'updated_at',
             ])
-            ->where('mahasiswa_id', $user->id)
             ->with([
                 'barang:id,nama_barang,foto,kategori_id,satuan_id',
                 'barang.kategori:id,nama_kategori',
                 'barang.satuan:id,nama_satuan',
                 'pengembalian:id,permohonans_id,status_pengembalian,bukti_foto,updated_at',
             ])
-            ->orderByDesc('id')
+            ->orderByDesc('id');
+
+        if (!$globalScope) {
+            $query->where('mahasiswa_id', $user->id);
+        }
+
+        $paginator = $query
             ->paginate($perPage)
             ->appends($request->query());
 
-        $items = collect($paginator->items())->map(function (Permohonan $item) {
+        $items = collect($paginator->items())->map(function (Permohonan $item) use ($request) {
             return [
                 'id' => $item->id,
                 'nama_kegiatan' => $item->nama_kegiatan,
@@ -57,13 +64,13 @@ class TransaksiController extends ApiController
                 'barang' => [
                     'id' => $item->barang?->id,
                     'nama_barang' => $item->barang?->nama_barang,
-                    'foto_url' => $item->barang?->foto ? asset('storage/' . $item->barang->foto) : null,
+                    'foto_url' => $this->storageUrl($request, $item->barang?->foto),
                     'kategori' => $item->barang?->kategori,
                     'satuan' => $item->barang?->satuan,
                 ],
                 'pengembalian' => $item->pengembalian ? [
                     'status_pengembalian' => $item->pengembalian->status_pengembalian,
-                    'bukti_foto_url' => $item->pengembalian->bukti_foto ? asset('storage/' . $item->pengembalian->bukti_foto) : null,
+                    'bukti_foto_url' => $this->storageUrl($request, $item->pengembalian->bukti_foto),
                     'updated_at' => optional($item->pengembalian->updated_at)->toIso8601String(),
                 ] : null,
                 'updated_at' => optional($item->updated_at)->toIso8601String(),
@@ -170,7 +177,7 @@ class TransaksiController extends ApiController
             ->orderByDesc('id')
             ->get()
             ->groupBy('nama_kegiatan')
-            ->map(function ($group, $kegiatan) {
+            ->map(function ($group, $kegiatan) use ($request) {
                 $first = $group->first();
                 return [
                     'nama_kegiatan' => $kegiatan,
@@ -180,7 +187,7 @@ class TransaksiController extends ApiController
                     'waktu_selesai' => $first->waktu_selesai,
                     'status' => $first->status,
                     'status_pengembalian' => optional($first->pengembalian)->status_pengembalian,
-                    'permohonans' => $group->map(function (Permohonan $item) {
+                    'permohonans' => $group->map(function (Permohonan $item) use ($request) {
                         return [
                             'id' => $item->id,
                             'jumlah' => $item->jumlah,
@@ -188,7 +195,7 @@ class TransaksiController extends ApiController
                             'barang' => [
                                 'id' => $item->barang?->id,
                                 'nama_barang' => $item->barang?->nama_barang,
-                                'foto_url' => $item->barang?->foto ? asset('storage/' . $item->barang->foto) : null,
+                                'foto_url' => $this->storageUrl($request, $item->barang?->foto),
                                 'kategori' => $item->barang?->kategori,
                                 'satuan' => $item->barang?->satuan,
                             ],
@@ -265,7 +272,7 @@ class TransaksiController extends ApiController
 
         return $this->success([
             'nama_kegiatan' => $target->nama_kegiatan,
-            'bukti_foto_url' => asset('storage/' . $storedPath),
+            'bukti_foto_url' => $this->storageUrl($request, $storedPath),
         ], 'Pengembalian berhasil diajukan.', 201);
     }
 
@@ -278,11 +285,16 @@ class TransaksiController extends ApiController
     {
         $user = $request->user();
         $since = $request->query('since');
+        $scope = strtolower((string) $request->query('scope', 'self'));
+        $globalScope = $scope === 'global';
 
         $base = Permohonan::query()
             ->select(['id', 'nama_kegiatan', 'status', 'mahasiswa_id', 'updated_at'])
-            ->where('mahasiswa_id', $user->id)
             ->with('pengembalian:id,permohonans_id,status_pengembalian,updated_at');
+
+        if (!$globalScope) {
+            $base->where('mahasiswa_id', $user->id);
+        }
 
         if ($since) {
             $base->where('updated_at', '>=', $since);
@@ -306,5 +318,14 @@ class TransaksiController extends ApiController
             'items' => $changed,
             'count' => $changed->count(),
         ], 'Sinkronisasi status berhasil.');
+    }
+
+    private function storageUrl(Request $request, ?string $path): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+
+        return rtrim($request->getSchemeAndHttpHost(), '/') . '/storage/' . ltrim($path, '/');
     }
 }
