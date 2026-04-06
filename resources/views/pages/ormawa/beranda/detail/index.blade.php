@@ -19,7 +19,7 @@
             opacity: 1;
         }
     </style>
-    <div class="max-w-screen-xl p-4 mx-auto">
+    <div class="max-w-screen-xl px-4 py-6 mx-auto">
         @if (session('error'))
             <script>
                 Swal.fire({
@@ -30,76 +30,74 @@
             </script>
         @endif
         <div class="space-y-5">
-            <div class="mt-5 bg-white p-4 text-blue-500 rounded-xl text-2xl font-semibold text-center shadow-lg">
+            <div class="mb-6 text-2xl font-bold text-gray-800">
                 Detail Barang
             </div>
 
-            <div class="bg-white p-4 rounded-xl shadow-lg">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                <div class="rounded-xl border border-gray-100 bg-white p-4 shadow-sm xl:col-span-1">
                     <div class="flex justify-center">
                         @if ($barang->foto)
                             <img src="{{ asset('storage/' . $barang->foto) }}"
-                                class="image border border-blue-300 rounded-lg shadow-lg" alt="{{ $barang->nama_barang }}" />
+                                class="image w-full rounded-lg border border-gray-200 object-contain"
+                                alt="{{ $barang->nama_barang }}" />
                         @else
-                            <i class="fa-regular fa-image text-gray-400 text-6xl"></i>
+                            <i class="fa-regular fa-image text-gray-300 text-6xl"></i>
                         @endif
                     </div>
-                    <div>
-                        <div>
-                            <p class="text-xl font-semibold">{{ $barang->nama_barang }}</p>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <span
-                                    class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ $barang->kategori->nama_kategori }}</span>
-                                <span
-                                    class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{{ $barang->satuan->nama_satuan }}</span>
+                </div>
 
-                            </div>
-                            <div>
-                                <span
-                                    class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">Sisa
-                                    {{ $barang->stock->stock }}</span>
-                            </div>
+                <div class="rounded-xl border border-gray-100 bg-white p-4 shadow-sm xl:col-span-1">
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-2xl font-semibold text-slate-900">{{ $barang->nama_barang }}</p>
+                            <p class="mt-1 text-sm text-slate-500">Informasi barang dan stok tersedia.</p>
                         </div>
-                        <div class="mt-4">
-                            <form
-                                action="{{ route('beranda.store', ['nama_barang' => $barang->nama_barang, 'barangId' => $barang->id]) }}"
-                                method="POST">
-                                @csrf
-                                <input type="text" name="barang_id" id="barang_id" value="{{ $barang->id }}" hidden>
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <p class="text-m font-medium">Jumlah Pinjam</p>
-                                    </div>
-                                    <div class="flex items-center border border-blue-300 rounded-xl bg-blue-500">
-                                        <!-- Tombol Minus -->
-                                        <button type="button" class="p-2 text-white" onclick="decrement()" id="btn-minus"
-                                            {{ $barang->stock->stock == 0 ? 'disabled' : '' }}>
-                                            <i class="fa-solid fa-minus"></i>
-                                        </button>
-                                        <!-- Input Kuantitas -->
-                                        <input type="number" name="jumlah" id="jumlah"
-                                            class="w-15 auto text-center font-bold" value="1" min="1"
-                                            max="{{ $barang->stock->stock }}" readonly
-                                            {{ $barang->stock->stock == 0 ? 'disabled' : '' }}>
-                                        <!-- Tombol Plus -->
-                                        <button type="button" class="p-2 text-white" onclick="increment()" id="btn-plus"
-                                            {{ $barang->stock->stock == 0 ? 'disabled' : '' }}>
-                                            <i class="fa-solid fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="mt-4">
-                                    <button type="submit" id="btn-tambah"
-                                        class="px-4 py-2 w-full text-white bg-blue-500 rounded-lg hover:bg-blue-800"
-                                        {{ $barang->stock->stock == 0 ? 'disabled' : '' }}>
-                                        Tambah ke Keranjang
-                                    </button>
-                                </div>
-                            </form>
+                        <div class="flex flex-wrap gap-2">
+                            <span
+                                class="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">{{ $barang->kategori->nama_kategori }}</span>
+                            <span
+                                class="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{{ $barang->satuan->nama_satuan }}</span>
+                            <span
+                                class="rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">Sisa
+                                {{ $barang->stock->stock }}</span>
                         </div>
                     </div>
+                </div>
+
+                <div class="rounded-xl border border-gray-100 bg-white p-4 shadow-sm xl:col-span-1">
+                    <form
+                        action="{{ route('beranda.store', ['nama_barang' => $barang->nama_barang, 'barangId' => $barang->id]) }}"
+                        method="POST">
+                        @csrf
+                        <input type="text" name="barang_id" id="barang_id" value="{{ $barang->id }}" hidden>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-slate-600">Jumlah Pinjam</p>
+                            </div>
+                            <div class="flex items-center rounded-xl border border-blue-100 bg-blue-50">
+                                <button type="button" class="p-2 text-blue-700" onclick="decrement()" id="btn-minus"
+                                    {{ $barang->stock->stock == 0 ? 'disabled' : '' }}>
+                                    <i class="fa-solid fa-minus"></i>
+                                </button>
+                                <input type="number" name="jumlah" id="jumlah"
+                                    class="w-16 bg-transparent text-center font-semibold text-slate-900 outline-none"
+                                    value="1" min="1" max="{{ $barang->stock->stock }}" readonly
+                                    {{ $barang->stock->stock == 0 ? 'disabled' : '' }}>
+                                <button type="button" class="p-2 text-blue-700" onclick="increment()" id="btn-plus"
+                                    {{ $barang->stock->stock == 0 ? 'disabled' : '' }}>
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <button type="submit" id="btn-tambah"
+                                class="w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+                                {{ $barang->stock->stock == 0 ? 'disabled' : '' }}>
+                                Tambah ke Keranjang
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

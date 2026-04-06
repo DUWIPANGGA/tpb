@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Web\Admin\Pengembalian;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pengembalian;
-use App\Models\Permohonan;
 use App\Models\Stock;
+use App\Support\PaginationPerPage;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,23 +14,42 @@ class PengembalianController extends Controller
 {
     public function index()
     {
-        $dataPengembalian = Pengembalian::simplePaginate(5)->groupBy('permohonans_id');
+        $paginator = Pengembalian::with(['permohonan.barang.kategori', 'permohonan.barang.satuan'])
+            ->orderByDesc('id')
+            ->paginate(PaginationPerPage::resolve());
+
+        $dataPengembalian = new LengthAwarePaginator(
+            collect($paginator->items())->groupBy('permohonans_id'),
+            $paginator->total(),
+            $paginator->perPage(),
+            $paginator->currentPage(),
+            [
+                'path' => request()->url(),
+                'query' => request()->query(),
+            ]
+        );
+
         return view('pages.admin.pengembalian.index', compact('dataPengembalian'));
     }
 
-    public function update(Request $request, $permohonanId)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'status_pengembalian' => 'required|in:Diterima,Ditolak,Menunggu',
         ]);
 
-        DB::transaction(function () use ($request, $permohonanId) {
-            // Ambil permohonan berdasarkan ID
-            $permohonan = Permohonan::findOrFail($permohonanId);
+        DB::transaction(function () use ($request, $id) {
+            $targetPengembalian = Pengembalian::with('permohonan')->findOrFail($id);
+            $permohonan = $targetPengembalian->permohonan;
 
-            // Ambil semua pengembalian berdasarkan nama_kegiatan dari permohonan
+            if (!$permohonan) {
+                throw new \RuntimeException('Data permohonan tidak ditemukan untuk pengembalian ini.');
+            }
+
+            // Update semua pengembalian pada kegiatan dan mahasiswa yang sama.
             $pengembalianList = Pengembalian::whereHas('permohonan', function ($query) use ($permohonan) {
-                $query->where('nama_kegiatan', $permohonan->nama_kegiatan);
+                $query->where('nama_kegiatan', $permohonan->nama_kegiatan)
+                    ->where('mahasiswa_id', $permohonan->mahasiswa_id);
             })->get();
 
             foreach ($pengembalianList as $item) {

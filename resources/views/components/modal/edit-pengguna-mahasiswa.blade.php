@@ -25,16 +25,19 @@
                         <label for="name" class="block mb-2 text-sm font-medium text-gray-600">Nama
                             Mahasiswa</label>
                         <input type="text" name="name" id="name" value="{{ $data->name }}"
+                            placeholder="Nama mahasiswa"
                             class="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
                     </div>
                     <div>
                         <label for="nim" class="block mb-2 text-sm font-medium text-gray-600">Nim</label>
                         <input type="text" name="nim" id="nim" value="{{ $data->nim }}"
+                            placeholder="NIM mahasiswa"
                             class="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
                     </div>
                     <div>
                         <label for="organisasi" class="block mb-2 text-sm font-medium text-gray-600">Organisasi</label>
                         <input type="text" name="organisasi" id="organisasi" value="{{ $data->organisasi }}"
+                            placeholder="Organisasi mahasiswa"
                             class="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
                     </div>
                     {{-- <div>
@@ -44,7 +47,7 @@
                     </div> --}}
                     <div>
                         <button type="submit"
-                            class="w-full cursor-pointer px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Simpan</button>
+                            class="w-full cursor-pointer px-4 py-2 text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Simpan</button>
                     </div>
                 </form>
             </div>

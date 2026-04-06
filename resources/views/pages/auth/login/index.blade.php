@@ -11,7 +11,7 @@
     <title>Login</title>
 </head>
 
-<body class="bg-blue-200">
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
     @if (session('success'))
         <script>
             Swal.fire({
@@ -21,7 +21,7 @@
             });
         </script>
     @endif
-    {{-- @if (session('error'))
+    @if (session('error'))
         <script>
             Swal.fire({
                 icon: 'error',
@@ -29,26 +29,39 @@
                 text: '{{ session('error') }}',
             });
         </script>
-    @endif --}}
+    @endif
     <div class="flex flex-col items-center justify-center h-screen p-4 space-y-4">
         <div class="flex justify-center">
             <img src="{{ asset('image/logo/polindra.png') }}" alt="" class="object-cover w-full h-24">
         </div>
-        <div class="w-full max-w-sm p-6 bg-white rounded-lg shadow-xl">
-            <h1 class="mb-6 text-3xl font-bold text-center">Login</h1>
-            <form action="{{ route('login.store') }}" method="POST" class="space-y-4">
+        <div class="w-full max-w-md p-8 bg-white rounded-xl shadow-lg border border-gray-100">
+            <h1 class="mb-8 text-3xl font-bold text-center text-gray-800 tracking-tight">Masuk</h1>
+            <form action="{{ route('login.store') }}" method="POST" class="space-y-5">
                 @csrf
                 <div>
-                    <input type="text" name="name" id="name" placeholder="Name"
-                        class="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-transparent" />
+                    <label for="name" class="block mb-2 text-sm font-medium text-gray-700">Nama Pengguna</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <i class="fa-solid fa-user text-gray-400"></i>
+                        </div>
+                        <input type="text" name="name" id="name" placeholder="Masukkan nama..."
+                            class="w-full pl-10 pr-4 py-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-600 focus:border-blue-600 outline-none transition-colors" />
+                    </div>
                 </div>
                 <div>
-                    <input type="password" name="password" id="password" placeholder="Password"
-                        class="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-transparent" />
+                    <label for="password" class="block mb-2 text-sm font-medium text-gray-700">Kata Sandi</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <i class="fa-solid fa-lock text-gray-400"></i>
+                        </div>
+                        <input type="password" name="password" id="password" placeholder="Password"
+                            class="w-full pl-10 pr-4 py-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-600 focus:border-blue-600 outline-none transition-colors" />
+                    </div>
                 </div>
-                <div>
+                <div class="pt-2">
                     <button type="submit"
-                        class="w-full px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Masuk</button>
+                        class="w-full px-5 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 transition-all">Sign
+                        in</button>
                 </div>
             </form>
         </div>

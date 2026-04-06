@@ -1,10 +1,10 @@
 @extends('pages.ormawa.index')
 @section('content')
     <div class="max-w-screen-xl p-4 mx-auto">
-        <div class="mt-5 bg-white p-4 text-blue-500 rounded-xl text-2xl font-semibold text-center shadow-lg">
+        <div class="mb-6 text-2xl font-bold text-gray-800">
             Tracking
         </div>
-        <div id="calendar" class="mt-5 bg-white p-4 rounded-xl shadow-lg"></div>
+        <div id="calendar" class="p-6 bg-white rounded-xl shadow-sm border border-gray-100"></div>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

@@ -22,17 +22,17 @@
                     @csrf
                     <div>
                         <label for="name" class="block mb-2 text-sm font-medium text-gray-600">Nama</label>
-                        <input type="text" name="name" id="name"
+                        <input type="text" name="name" id="name" placeholder="Masukkan nama admin"
                             class="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
                     </div>
                     <div>
                         <label for="username" class="block mb-2 text-sm font-medium text-gray-600">Username</label>
-                        <input type="text" name="username" id="username"
+                        <input type="text" name="username" id="username" placeholder="Masukkan username"
                             class="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
                     </div>
                     <div>
                         <label for="nip" class="block mb-2 text-sm font-medium text-gray-600">Nip</label>
-                        <input type="text" name="nip" id="nip"
+                        <input type="text" name="nip" id="nip" placeholder="Masukkan NIP"
                             class="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
                     </div>
                     {{-- <div>
@@ -42,7 +42,7 @@
                     </div> --}}
                     <div>
                         <button type="submit"
-                            class="w-full cursor-pointer px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Simpan</button>
+                            class="w-full cursor-pointer px-4 py-2 text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Simpan</button>
                     </div>
                 </form>
             </div>

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Web\Ormawa;
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Keranjang;
-use App\Models\Ormawa;
+use App\Support\PaginationPerPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,18 +14,20 @@ class BerandaController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search');
+        $dataKeranjang = collect();
+        $notifikasiKeranjang = 0;
 
         $dataBarang = Barang::when($search, function ($query) use ($search) {
             return $query->where('nama_barang', 'like', '%' . $search . '%');
-        })->simplePaginate(6);
+        })->paginate(PaginationPerPage::resolve());
 
-        if (auth()->check()) {
-            $dataKeranjang = Keranjang::where('mahasiswa_id', auth()->id())
+        if (auth('ormawa')->check()) {
+            $dataKeranjang = Keranjang::where('mahasiswa_id', auth('ormawa')->id())
                 ->with('barang')
                 ->get();
 
             // Hitung jumlah total item di keranjang
-            $notifikasiKeranjang = $dataKeranjang->sum('barang_id');
+            $notifikasiKeranjang = $dataKeranjang->count();
         }
 
         return view('pages.ormawa.beranda.index', compact('dataBarang', 'search', 'dataKeranjang', 'notifikasiKeranjang'));
@@ -34,14 +36,16 @@ class BerandaController extends Controller
     public function show($nama_barang)
     {
         $barang = Barang::where('nama_barang', $nama_barang)->first();
+        $dataKeranjang = collect();
+        $notifikasiKeranjang = 0;
 
-        if (auth()->check()) {
-            $dataKeranjang = Keranjang::where('mahasiswa_id', auth()->id())
+        if (auth('ormawa')->check()) {
+            $dataKeranjang = Keranjang::where('mahasiswa_id', auth('ormawa')->id())
                 ->with('barang')
                 ->get();
 
             // Hitung jumlah total item di keranjang
-            $notifikasiKeranjang = $dataKeranjang->sum('barang_id');
+            $notifikasiKeranjang = $dataKeranjang->count();
         }
 
         return view('pages.ormawa.beranda.detail.index', compact('barang', 'dataKeranjang', 'notifikasiKeranjang'));
@@ -49,7 +53,7 @@ class BerandaController extends Controller
     public function store(Request $request, $nama_barang)
     {
         $barang = Barang::where('nama_barang', $nama_barang)->firstOrFail();
-        $mahasiswa = Auth::user();
+        $mahasiswa = Auth::guard('ormawa')->user();
 
         // Cek apakah stok kosong
         if ($barang->stock->stock <= 0) {

@@ -28,10 +28,14 @@
                                 @foreach ($data as $item)
                                     <div class="flex items-center gap-1">
                                         @if ($item->barang->foto)
-                                            <img src="{{ asset('storage/' . $item->barang->foto) ?? 'image/barang.png' }}"
-                                                class="w-12" alt="{{ $item->barang->nama_barang }}">
+                                            <img src="{{ asset('storage/' . $item->barang->foto) }}"
+                                                class="h-12 w-12 rounded-lg border border-gray-200 object-cover"
+                                                alt="{{ $item->barang->nama_barang }}">
                                         @else
-                                            <i class="fa-regular fa-image text-gray-800 text-6xl"></i>
+                                            <div
+                                                class="flex h-12 w-12 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-gray-300">
+                                                <i class="fa-regular fa-image"></i>
+                                            </div>
                                         @endif
                                         <div>
                                             <div class="flex gap-1">
@@ -39,17 +43,17 @@
                                                     {{ $item->barang->nama_barang }}
                                                 </p>
                                                 <p
-                                                    class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                                                    class="bg-blue-50 text-blue-700 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full border border-blue-100">
                                                     Jumlah Pinjam {{ $data->first()->jumlah }}
                                                 </p>
                                             </div>
                                             <p class="text-xs text-gray-500 mt-1 ms-4 flex gap-1 items-center">
                                                 <span
-                                                    class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                                                    class="bg-blue-50 text-blue-700 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full border border-blue-100">
                                                     {{ $item->barang->kategori->nama_kategori ?? 'Kategori tidak tersedia' }}
                                                 </span>
                                                 <span
-                                                    class="bg-pink-100 text-pink-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                                                    class="bg-slate-100 text-slate-700 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full border border-slate-200">
                                                     {{ $item->barang->satuan->nama_satuan ?? 'Satuan tidak tersedia' }}
                                                 </span>
                                                 @php
@@ -60,19 +64,19 @@
 
                                                 @if ($status === 'Menunggu')
                                                     <span
-                                                        class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                                                        class="bg-yellow-50 text-yellow-700 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full border border-yellow-100">
                                                         Status:
                                                         {{ $item->pengembalian->status_pengembalian ?? 'Status tidak tersedia' }}
                                                     </span>
                                                 @elseif ($status === 'Diterima')
                                                     <span
-                                                        class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                                                        class="bg-emerald-50 text-emerald-700 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full border border-emerald-100">
                                                         Status:
                                                         {{ $item->pengembalian->status_pengembalian ?? 'Status tidak tersedia' }}
                                                     </span>
                                                 @elseif ($status === 'Ditolak')
                                                     <span
-                                                        class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                                                        class="bg-red-50 text-red-700 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full border border-red-100">
                                                         Status:
                                                         {{ $item->pengembalian->status_pengembalian ?? 'Status tidak tersedia' }}
                                                     </span>
@@ -88,7 +92,8 @@
                                     <div class="border p-2 rounded-lg">
                                         <label for="bukti_foto"
                                             class="block mb-2 text-sm font-medium text-gray-600">Preview</label>
-                                        <img id="preview" class="hidden object-cover zoom-image rounded-lg">
+                                        <img id="preview"
+                                            class="hidden h-44 w-full rounded-lg border border-gray-200 object-cover">
                                     </div>
                                     <div>
                                         <label for="bukti_foto"
@@ -102,7 +107,7 @@
                             </div>
                         </div>
                         <button type="submit"
-                            class="w-full mt-4 px-4 py-2 bg-blue-500 text-white rounded-xl">Simpan</button>
+                            class="w-full mt-4 rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-blue-700">Simpan</button>
                     </div>
                 </form>
             </div>

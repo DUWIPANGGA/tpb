@@ -16,7 +16,9 @@ use App\Http\Controllers\Web\Ormawa\KeranjangController;
 use App\Http\Controllers\Web\Ormawa\PengembalianController;
 use App\Http\Controllers\Web\Admin\Pengembalian\PengembalianController as PengembalianControllerAdmin;
 use App\Http\Controllers\Web\Ormawa\RiwayatController;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +33,342 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::post('masuk', [LoginController::class, 'store'])->name('login.store');
+
+Route::get('/api/docs', function () {
+    return view('docs.swagger', [
+        'openapiUrl' => route('api.docs.openapi'),
+    ]);
+})->name('api.docs');
+
+Route::get('/api/docs/openapi.json', function () {
+    return response()->json([
+        'openapi' => '3.0.3',
+        'info' => [
+            'title' => 'TPB Ormawa Mobile API',
+            'version' => '1.0.0',
+            'description' => 'API untuk integrasi mobile app Flutter. Khusus akun ormawa.',
+        ],
+        'servers' => [
+            [
+                'url' => url('/api/v1'),
+                'description' => 'Current environment',
+            ],
+        ],
+        'tags' => [
+            ['name' => 'Auth'],
+            ['name' => 'Barang'],
+            ['name' => 'Keranjang'],
+            ['name' => 'Transaksi'],
+            ['name' => 'Realtime'],
+        ],
+        'components' => [
+            'securitySchemes' => [
+                'bearerAuth' => [
+                    'type' => 'http',
+                    'scheme' => 'bearer',
+                    'bearerFormat' => 'Sanctum Token',
+                ],
+            ],
+            'schemas' => [
+                'ApiSuccess' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'success' => ['type' => 'boolean', 'example' => true],
+                        'message' => ['type' => 'string', 'example' => 'OK'],
+                        'data' => ['type' => 'object'],
+                        'server_time' => ['type' => 'string', 'example' => '2026-04-06T10:00:00+07:00'],
+                    ],
+                ],
+            ],
+        ],
+        'paths' => [
+            '/auth/login' => [
+                'post' => [
+                    'tags' => ['Auth'],
+                    'summary' => 'Login Ormawa (utama: name + password)',
+                    'requestBody' => [
+                        'required' => true,
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'required' => ['password'],
+                                    'properties' => [
+                                        'name' => ['type' => 'string', 'example' => 'Esa'],
+                                        'nim' => ['type' => 'string', 'example' => '1234567', 'description' => 'Opsional, kompatibilitas lama'],
+                                        'password' => ['type' => 'string', 'example' => '@Poli1234567'],
+                                        'device_name' => ['type' => 'string', 'example' => 'flutter-android'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'responses' => [
+                        '200' => ['description' => 'Login berhasil'],
+                        '401' => ['description' => 'Unauthorized'],
+                        '422' => ['description' => 'Validation error'],
+                    ],
+                ],
+            ],
+            '/auth/me' => [
+                'get' => [
+                    'tags' => ['Auth'],
+                    'summary' => 'Get profile',
+                    'security' => [['bearerAuth' => []]],
+                    'responses' => [
+                        '200' => ['description' => 'Success'],
+                        '401' => ['description' => 'Unauthorized / SESSION_EXPIRED'],
+                    ],
+                ],
+            ],
+            '/auth/logout' => [
+                'post' => [
+                    'tags' => ['Auth'],
+                    'summary' => 'Logout',
+                    'security' => [['bearerAuth' => []]],
+                    'responses' => [
+                        '200' => ['description' => 'Success'],
+                        '401' => ['description' => 'Unauthorized / SESSION_EXPIRED'],
+                    ],
+                ],
+            ],
+            '/barang' => [
+                'get' => [
+                    'tags' => ['Barang'],
+                    'summary' => 'List barang',
+                    'security' => [['bearerAuth' => []]],
+                    'parameters' => [
+                        ['name' => 'search', 'in' => 'query', 'schema' => ['type' => 'string']],
+                        ['name' => 'per_page', 'in' => 'query', 'schema' => ['type' => 'integer', 'default' => 10]],
+                    ],
+                    'responses' => [
+                        '200' => ['description' => 'Success'],
+                        '401' => ['description' => 'Unauthorized / SESSION_EXPIRED'],
+                    ],
+                ],
+            ],
+            '/barang/{id}' => [
+                'get' => [
+                    'tags' => ['Barang'],
+                    'summary' => 'Detail barang',
+                    'security' => [['bearerAuth' => []]],
+                    'parameters' => [
+                        ['name' => 'id', 'in' => 'path', 'required' => true, 'schema' => ['type' => 'integer']],
+                    ],
+                    'responses' => [
+                        '200' => ['description' => 'Success'],
+                        '401' => ['description' => 'Unauthorized / SESSION_EXPIRED'],
+                        '404' => ['description' => 'Not found'],
+                    ],
+                ],
+            ],
+            '/keranjang' => [
+                'get' => [
+                    'tags' => ['Keranjang'],
+                    'summary' => 'List keranjang',
+                    'security' => [['bearerAuth' => []]],
+                    'responses' => [
+                        '200' => ['description' => 'Success'],
+                        '401' => ['description' => 'Unauthorized / SESSION_EXPIRED'],
+                    ],
+                ],
+                'post' => [
+                    'tags' => ['Keranjang'],
+                    'summary' => 'Tambah item keranjang',
+                    'security' => [['bearerAuth' => []]],
+                    'requestBody' => [
+                        'required' => true,
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'required' => ['barang_id', 'jumlah'],
+                                    'properties' => [
+                                        'barang_id' => ['type' => 'integer', 'example' => 1],
+                                        'jumlah' => ['type' => 'integer', 'example' => 1],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'responses' => [
+                        '201' => ['description' => 'Created'],
+                        '401' => ['description' => 'Unauthorized / SESSION_EXPIRED'],
+                        '422' => ['description' => 'Validation error'],
+                    ],
+                ],
+            ],
+            '/keranjang/{id}' => [
+                'put' => [
+                    'tags' => ['Keranjang'],
+                    'summary' => 'Update item keranjang',
+                    'security' => [['bearerAuth' => []]],
+                    'parameters' => [
+                        ['name' => 'id', 'in' => 'path', 'required' => true, 'schema' => ['type' => 'integer']],
+                    ],
+                    'requestBody' => [
+                        'required' => true,
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'required' => ['jumlah'],
+                                    'properties' => [
+                                        'jumlah' => ['type' => 'integer', 'example' => 2],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'responses' => [
+                        '200' => ['description' => 'Success'],
+                        '401' => ['description' => 'Unauthorized / SESSION_EXPIRED'],
+                    ],
+                ],
+                'delete' => [
+                    'tags' => ['Keranjang'],
+                    'summary' => 'Hapus item keranjang',
+                    'security' => [['bearerAuth' => []]],
+                    'parameters' => [
+                        ['name' => 'id', 'in' => 'path', 'required' => true, 'schema' => ['type' => 'integer']],
+                    ],
+                    'responses' => [
+                        '200' => ['description' => 'Success'],
+                        '401' => ['description' => 'Unauthorized / SESSION_EXPIRED'],
+                    ],
+                ],
+            ],
+            '/permohonan' => [
+                'get' => [
+                    'tags' => ['Transaksi'],
+                    'summary' => 'List permohonan',
+                    'security' => [['bearerAuth' => []]],
+                    'responses' => [
+                        '200' => ['description' => 'Success'],
+                        '401' => ['description' => 'Unauthorized / SESSION_EXPIRED'],
+                    ],
+                ],
+            ],
+            '/permohonan/submit' => [
+                'post' => [
+                    'tags' => ['Transaksi'],
+                    'summary' => 'Submit permohonan dari keranjang',
+                    'security' => [['bearerAuth' => []]],
+                    'requestBody' => [
+                        'required' => true,
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'required' => ['nama_kegiatan', 'hari_atau_tanggal', 'waktu_mulai', 'waktu_selesai', 'phone'],
+                                    'properties' => [
+                                        'unit_kerja' => ['type' => 'string', 'example' => 'HIMA TI'],
+                                        'nama_kegiatan' => ['type' => 'string', 'example' => 'Seminar Proker'],
+                                        'hari_atau_tanggal' => ['type' => 'string', 'example' => '2026-04-20'],
+                                        'waktu_mulai' => ['type' => 'string', 'example' => '08:00'],
+                                        'waktu_selesai' => ['type' => 'string', 'example' => '11:00'],
+                                        'phone' => ['type' => 'string', 'example' => '081234567890'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'responses' => [
+                        '201' => ['description' => 'Created'],
+                        '401' => ['description' => 'Unauthorized / SESSION_EXPIRED'],
+                    ],
+                ],
+            ],
+            '/pengembalian' => [
+                'get' => [
+                    'tags' => ['Transaksi'],
+                    'summary' => 'List pengembalian',
+                    'security' => [['bearerAuth' => []]],
+                    'responses' => [
+                        '200' => ['description' => 'Success'],
+                        '401' => ['description' => 'Unauthorized / SESSION_EXPIRED'],
+                    ],
+                ],
+            ],
+            '/pengembalian/{permohonanId}' => [
+                'post' => [
+                    'tags' => ['Transaksi'],
+                    'summary' => 'Submit pengembalian',
+                    'security' => [['bearerAuth' => []]],
+                    'parameters' => [
+                        ['name' => 'permohonanId', 'in' => 'path', 'required' => true, 'schema' => ['type' => 'integer']],
+                    ],
+                    'requestBody' => [
+                        'required' => true,
+                        'content' => [
+                            'multipart/form-data' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'required' => ['bukti_foto'],
+                                    'properties' => [
+                                        'bukti_foto' => ['type' => 'string', 'format' => 'binary'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'responses' => [
+                        '201' => ['description' => 'Created'],
+                        '401' => ['description' => 'Unauthorized / SESSION_EXPIRED'],
+                    ],
+                ],
+            ],
+            '/riwayat' => [
+                'get' => [
+                    'tags' => ['Transaksi'],
+                    'summary' => 'List riwayat',
+                    'security' => [['bearerAuth' => []]],
+                    'responses' => [
+                        '200' => ['description' => 'Success'],
+                        '401' => ['description' => 'Unauthorized / SESSION_EXPIRED'],
+                    ],
+                ],
+            ],
+            '/sync/status' => [
+                'get' => [
+                    'tags' => ['Realtime'],
+                    'summary' => 'Sinkronisasi status realtime',
+                    'security' => [['bearerAuth' => []]],
+                    'parameters' => [
+                        ['name' => 'since', 'in' => 'query', 'schema' => ['type' => 'string', 'example' => '2026-04-06T10:00:00+07:00']],
+                    ],
+                    'responses' => [
+                        '200' => ['description' => 'Success'],
+                        '401' => ['description' => 'Unauthorized / SESSION_EXPIRED'],
+                    ],
+                ],
+            ],
+        ],
+    ]);
+})->name('api.docs.openapi');
+
+Route::get('/api/docs/markdown', function () {
+    $docPath = base_path('docs/API_MOBILE.md');
+
+    abort_unless(File::exists($docPath), 404, 'Dokumentasi API tidak ditemukan.');
+
+    $markdown = File::get($docPath);
+    $html = Str::markdown($markdown);
+
+    return view('docs.api-mobile', [
+        'content' => $html,
+    ]);
+})->name('api.docs.markdown');
+
+Route::get('/api/docs/postman', function () {
+    $postmanPath = base_path('docs/postman/TPB_Ormawa_API_v1.postman_collection.json');
+
+    abort_unless(File::exists($postmanPath), 404, 'Postman collection tidak ditemukan.');
+
+    return response()->download($postmanPath, 'TPB_Ormawa_API_v1.postman_collection.json', [
+        'Content-Type' => 'application/json',
+    ]);
+})->name('api.docs.postman');
 
 Route::prefix('informasi')->group(function () {
     Route::get('tracking', [InformasiController::class, 'index'])->name('tracking');
@@ -85,7 +423,7 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('laporan/export-pdf', [LaporanController::class, 'exportPdf'])->name('laporan.export');
 });
 
-Route::middleware(['auth:ormawa'])->group(function () {
+Route::middleware(['auth:ormawa', 'ormawa.session'])->group(function () {
     Route::resource('logout/ormawa', LogoutController::class);
 
     Route::get('beranda', [BerandaController::class, 'index'])->name('beranda');

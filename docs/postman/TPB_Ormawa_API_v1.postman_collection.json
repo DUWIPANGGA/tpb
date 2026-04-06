@@ -1,0 +1,480 @@
+{
+    "info": {
+        "_postman_id": "1e228499-9f1a-4e95-b8ec-188b4a6076ef",
+        "name": "TPB Ormawa API v1",
+        "description": "Collection untuk testing API mobile ormawa TPB.\n\nGunakan endpoint login terlebih dahulu. Token akan otomatis disimpan ke variable collection `token`.\n\nCatatan session: jika login di web atau mobile perangkat lain, request protected bisa membalas 401 SESSION_EXPIRED.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost/api/v1",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "barang_id",
+            "value": "1",
+            "type": "string"
+        },
+        {
+            "key": "keranjang_id",
+            "value": "1",
+            "type": "string"
+        },
+        {
+            "key": "permohonan_id",
+            "value": "1",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Login Ormawa",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Esa\",\n  \"nim\": \"1234567\",\n  \"password\": \"@Poli1234567\",\n  \"device_name\": \"postman\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/login",
+                            "host": ["{{base_url}}"],
+                            "path": ["auth", "login"]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "let jsonData = {};",
+                                    "try { jsonData = pm.response.json(); } catch (e) {}",
+                                    "if (pm.response.code === 200 && jsonData?.data?.access_token) {",
+                                    "  pm.collectionVariables.set('token', jsonData.data.access_token);",
+                                    "}",
+                                    "pm.test('Login response valid', function () {",
+                                    "  pm.expect(pm.response.code).to.be.oneOf([200, 401, 422]);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Me",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/me",
+                            "host": ["{{base_url}}"],
+                            "path": ["auth", "me"]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "let jsonData = {};",
+                                    "try { jsonData = pm.response.json(); } catch (e) {}",
+                                    "if (pm.response.code === 401 && jsonData.code === 'SESSION_EXPIRED') {",
+                                    "  console.log('Session expired, please login again.');",
+                                    "}",
+                                    "pm.test('Me request is authorized or session expired', function () {",
+                                    "  pm.expect(pm.response.code).to.be.oneOf([200, 401]);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/logout",
+                            "host": ["{{base_url}}"],
+                            "path": ["auth", "logout"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Barang",
+            "item": [
+                {
+                    "name": "List Barang",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/barang?search=&per_page=10",
+                            "host": ["{{base_url}}"],
+                            "path": ["barang"],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": ""
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Detail Barang",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/barang/{{barang_id}}",
+                            "host": ["{{base_url}}"],
+                            "path": ["barang", "{{barang_id}}"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Keranjang",
+            "item": [
+                {
+                    "name": "List Keranjang",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/keranjang?per_page=10",
+                            "host": ["{{base_url}}"],
+                            "path": ["keranjang"],
+                            "query": [
+                                {
+                                    "key": "per_page",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Tambah Keranjang",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"barang_id\": 1,\n  \"jumlah\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/keranjang",
+                            "host": ["{{base_url}}"],
+                            "path": ["keranjang"]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Keranjang",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"jumlah\": 2\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/keranjang/{{keranjang_id}}",
+                            "host": ["{{base_url}}"],
+                            "path": ["keranjang", "{{keranjang_id}}"]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Keranjang",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/keranjang/{{keranjang_id}}",
+                            "host": ["{{base_url}}"],
+                            "path": ["keranjang", "{{keranjang_id}}"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Transaksi",
+            "item": [
+                {
+                    "name": "List Permohonan",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/permohonan?per_page=10",
+                            "host": ["{{base_url}}"],
+                            "path": ["permohonan"],
+                            "query": [
+                                {
+                                    "key": "per_page",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Submit Permohonan",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"unit_kerja\": \"HIMA TI\",\n  \"nama_kegiatan\": \"Seminar Proker\",\n  \"hari_atau_tanggal\": \"2026-04-20\",\n  \"waktu_mulai\": \"08:00\",\n  \"waktu_selesai\": \"11:00\",\n  \"phone\": \"081234567890\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/permohonan/submit",
+                            "host": ["{{base_url}}"],
+                            "path": ["permohonan", "submit"]
+                        }
+                    }
+                },
+                {
+                    "name": "List Pengembalian",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/pengembalian",
+                            "host": ["{{base_url}}"],
+                            "path": ["pengembalian"]
+                        }
+                    }
+                },
+                {
+                    "name": "Submit Pengembalian (form-data)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "bukti_foto",
+                                    "type": "file",
+                                    "src": ""
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/pengembalian/{{permohonan_id}}",
+                            "host": ["{{base_url}}"],
+                            "path": ["pengembalian", "{{permohonan_id}}"]
+                        }
+                    }
+                },
+                {
+                    "name": "Riwayat",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/riwayat?per_page=10",
+                            "host": ["{{base_url}}"],
+                            "path": ["riwayat"],
+                            "query": [
+                                {
+                                    "key": "per_page",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Sync Status",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/sync/status?since=2026-04-06T10:00:00+07:00",
+                            "host": ["{{base_url}}"],
+                            "path": ["sync", "status"],
+                            "query": [
+                                {
+                                    "key": "since",
+                                    "value": "2026-04-06T10:00:00+07:00"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
