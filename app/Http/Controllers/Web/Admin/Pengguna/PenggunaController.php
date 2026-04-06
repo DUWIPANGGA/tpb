@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Web\Admin\Pengguna;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ormawa;
+use App\Support\PaginationPerPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redirect;
 
 class PenggunaController extends Controller
 {
     public function index()
     {
-        $mahasiswa = Ormawa::simplePaginate(5);
+        $mahasiswa = Ormawa::paginate(PaginationPerPage::resolve());
         return view('pages.admin.pengguna.mahasiswa.index', compact('mahasiswa'));
     }
 

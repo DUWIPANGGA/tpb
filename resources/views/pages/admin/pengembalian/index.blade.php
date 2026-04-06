@@ -21,22 +21,22 @@
             </script>
         @endif
 
-        <div class="space-y-4 rounded-lg mt-14">
-            <div class="p-4 bg-white rounded-lg shadow-lg flex items-center">
+        <div class="space-y-4 rounded-lg mt-4">
+            <div class="p-4 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center">
                 <p class="text-lg font-semibold">Verifikasi Pengembalian</p>
             </div>
 
-            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <div class="relative overflow-x-auto bg-white shadow-sm border border-gray-200 sm:rounded-xl">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                         <tr>
                             <th scope="col" class="px-6 py-3">No</th>
-                            <th scope="col" class="px-6 py-3">Bukti Pengembalian</th>
                             <th scope="col" class="px-6 py-3">Unit Kerja</th>
                             <th scope="col" class="px-6 py-3">Nama Kegiatan</th>
                             <th scope="col" class="px-6 py-3">Hari atau Tanggal</th>
                             <th scope="col" class="px-6 py-3">Waktu Mulai</th>
                             <th scope="col" class="px-6 py-3">Waktu Selesai</th>
+                            <th scope="col" class="px-6 py-3">Status</th>
                             <th scope="col" class="px-6 py-3">Aksi</th>
                         </tr>
                     </thead>
@@ -44,10 +44,6 @@
                         @foreach ($dataPengembalian as $mahasiswa_id => $data)
                             <tr class="odd:bg-white even:bg-gray-50 border-b border-gray-200">
                                 <td class="px-6 py-4">{{ $loop->iteration }}</td>
-                                <td class="px-6 py-4">
-                                    <img src="{{ asset('storage/' . $data->first()->bukti_foto) }}" class="w-12 rounded-lg"
-                                        alt="bukti foto" />
-                                </td>
                                 <td class="px-6 py-4">{{ $data->first()->permohonan->unit_kerja }}</td>
                                 <td class="px-6 py-4">{{ $data->first()->permohonan->nama_kegiatan }}</td>
                                 <td class="px-6 py-4">
@@ -55,14 +51,20 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     {{ \Carbon\Carbon::parse($data->first()->permohonan->waktu_mulai)->format('H:i') }} WIB
+                                </td>
                                 <td class="px-6 py-4">
                                     {{ \Carbon\Carbon::parse($data->first()->permohonan->waktu_selesai)->format('H:i') }}
                                     WIB
                                 </td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="ui-badge {{ $data->first()->status_pengembalian == 'Diterima' ? 'ui-badge-success' : ($data->first()->status_pengembalian == 'Ditolak' ? 'ui-badge-danger' : 'ui-badge-warning') }}">
+                                        {{ $data->first()->status_pengembalian ?? 'Menunggu' }}
+                                    </span>
+                                </td>
                                 <td class="flex items-center gap-2 px-6 py-4">
                                     <button type="button" data-modal-target="permohonan{{ $mahasiswa_id }}"
-                                        data-modal-toggle="permohonan{{ $mahasiswa_id }}"
-                                        class="flex items-center px-2 py-2 text-sm text-white bg-yellow-400 rounded">
+                                        data-modal-toggle="permohonan{{ $mahasiswa_id }}" class="ui-btn ui-btn-primary">
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
 
@@ -74,6 +76,9 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+            <div class="pt-2">
+                {{ $dataPengembalian->links('components.pagination.blue') }}
             </div>
         </div>
     </div>

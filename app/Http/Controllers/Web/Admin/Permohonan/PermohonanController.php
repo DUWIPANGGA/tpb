@@ -5,13 +5,29 @@ namespace App\Http\Controllers\Web\Admin\Permohonan;
 use App\Http\Controllers\Controller;
 use App\Models\Permohonan;
 use App\Models\Stock;
+use App\Support\PaginationPerPage;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 
 class PermohonanController extends Controller
 {
     public function index()
     {
-        $dataPermohonan = Permohonan::simplePaginate(5)->groupBy('nama_kegiatan');
+        $paginator = Permohonan::with(['mahasiswa', 'barang.kategori', 'barang.satuan'])
+            ->orderByDesc('id')
+            ->paginate(PaginationPerPage::resolve());
+
+        $dataPermohonan = new LengthAwarePaginator(
+            collect($paginator->items())->groupBy('nama_kegiatan'),
+            $paginator->total(),
+            $paginator->perPage(),
+            $paginator->currentPage(),
+            [
+                'path' => request()->url(),
+                'query' => request()->query(),
+            ]
+        );
+
         return view("pages.admin.permohonan.index", compact('dataPermohonan'));
     }
 

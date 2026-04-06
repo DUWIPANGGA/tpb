@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Admin\Pengguna;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Support\PaginationPerPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -11,7 +12,7 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $admins = Admin::simplePaginate('5');
+        $admins = Admin::paginate(PaginationPerPage::resolve());
         return view('pages.admin.pengguna.admin.index', compact('admins'));
     }
 

@@ -31,13 +31,13 @@
                         <div>
                             <label for="nama_barang" class="block mb-2 text-sm font-medium text-gray-600">Nama
                                 Barang</label>
-                            <input type="text" name="nama_barang" id="nama_barang"
+                            <input type="text" name="nama_barang" id="nama_barang" placeholder="Masukkan nama barang"
                                 class="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
                         </div>
                         <div>
                             <label for="stock" class="block mb-2 text-sm font-medium text-gray-600">Jumlah
                                 Stock</label>
-                            <input type="text" name="stock" id="stock"
+                            <input type="text" name="stock" id="stock" placeholder="Masukkan jumlah stok"
                                 class="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
                         </div>
                     </div>
@@ -47,7 +47,7 @@
                                 class="block mb-2 text-sm font-medium text-gray-600">Kategori</label>
                             <select type="text" name="kategori_id" id="kategori_id"
                                 class="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
-                                <option value="">---Pilih Kategori---</option>
+                                <option value="">--- Pilih Kategori ---</option>
                                 @foreach ($kategoris as $kategori)
                                     <option value="{{ $kategori->id }}">{{ $kategori->nama_kategori }}
                                     </option>
@@ -58,7 +58,7 @@
                             <label for="satuan_id" class="block mb-2 text-sm font-medium text-gray-600">Satuan</label>
                             <select type="text" name="satuan_id" id="satuan_id"
                                 class="w-full px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
-                                <option value="">---Pilih Satuan---</option>
+                                <option value="">--- Pilih Satuan ---</option>
                                 @foreach ($satuans as $satuan)
                                     <option value="{{ $satuan->id }}">{{ $satuan->nama_satuan }}
                                     </option>
@@ -68,7 +68,7 @@
                     </div>
                     <div>
                         <button type="submit"
-                            class="w-full cursor-pointer px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Simpan</button>
+                            class="w-full cursor-pointer px-4 py-2 text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Simpan</button>
                     </div>
                 </form>
             </div>

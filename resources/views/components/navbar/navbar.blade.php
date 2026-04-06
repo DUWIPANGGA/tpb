@@ -4,7 +4,7 @@
             <div class="flex items-center">
                 <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar"
                     type="button"
-                    class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200">
+                    class="inline-flex items-center p-2 text-sm text-slate-500 rounded-lg sm:hidden transition-colors hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-gray-200">
                     <span class="sr-only">Open sidebar</span>
                     <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg">
@@ -42,7 +42,7 @@
                         <ul class="py-1">
                             <li>
                                 <a href="{{ route('logout.index') }}"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                                    class="block px-4 py-2 text-sm text-slate-700 transition-colors hover:bg-slate-50 hover:text-slate-900">
                                     Keluar
                                 </a>
                             </li>
@@ -61,14 +61,14 @@
         <ul class="space-y-2 font-medium">
             <li>
                 <a href="{{ route('dashboard') }}"
-                    class="flex items-center p-2 rounded-lg hover:bg-blue-200 hover:text-white {{ request()->routeIs('dashboard') ? 'bg-blue-500 text-white' : '' }}">
+                    class="flex items-center p-2 rounded-lg border border-transparent hover:bg-slate-50 hover:text-slate-900 text-slate-700 transition-colors {{ request()->routeIs('dashboard') ? 'bg-blue-50 text-blue-700 border-blue-100 shadow-sm' : '' }}">
                     <i class="fa-solid fa-house"></i>
                     <span class="ms-3">Dashboard</span>
                 </a>
             </li>
             <li>
                 <button type="button"
-                    class="flex items-center justify-between w-full p-2 rounded-lg hover:bg-blue-200 hover:text-white {{ Request::is('pengguna/*') ? 'bg-blue-500 text-white' : '' }}"
+                    class="flex items-center justify-between w-full p-2 rounded-lg border border-transparent hover:bg-slate-50 hover:text-slate-900 text-slate-700 transition-colors {{ Request::is('pengguna/*') ? 'bg-blue-50 text-blue-700 border-blue-100 shadow-sm' : '' }}"
                     aria-expanded="false" data-collapse-toggle="dropdown-pengguna">
                     <span class="flex items-center">
                         <i class="fa-solid fa-users me-2"></i> Pengguna
@@ -78,14 +78,14 @@
                 <ul id="dropdown-pengguna" class="hidden py-2 space-y-2">
                     <li>
                         <a href="{{ route('admin') }}"
-                            class="flex gap-1 items-center w-full p-2 pl-11 rounded-lg hover:bg-blue-200 hover:text-white {{ request()->routeIs('admin') ? 'bg-blue-500 text-white' : '' }}">
+                            class="flex gap-1 items-center w-full p-2 pl-11 rounded-lg hover:bg-slate-50 hover:text-slate-900 text-slate-700 transition-colors {{ request()->routeIs('admin') ? 'bg-blue-50 text-blue-700 border border-blue-100 shadow-sm' : '' }}">
                             <i class="fa-solid fa-user"></i>
                             <span class="ms-3">Admin</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('mahasiswa') }}"
-                            class="flex gap-1 items-center w-full p-2 pl-11 rounded-lg hover:bg-blue-200 hover:text-white {{ request()->routeIs('mahasiswa') ? 'bg-blue-500 text-white' : '' }}">
+                            class="flex gap-1 items-center w-full p-2 pl-11 rounded-lg hover:bg-slate-50 hover:text-slate-900 text-slate-700 transition-colors {{ request()->routeIs('mahasiswa') ? 'bg-blue-50 text-blue-700 border border-blue-100 shadow-sm' : '' }}">
                             <i class="fa-solid fa-user"></i>
                             <span class="ms-3">Mahasiswa</span>
                         </a>
@@ -94,7 +94,7 @@
             </li>
             <li>
                 <button type="button"
-                    class="flex items-center justify-between w-full p-2 rounded-lg hover:bg-blue-200 hover:text-white {{ Request::is('kelola-barang/*') ? 'bg-blue-500 text-white' : '' }}"
+                    class="flex items-center justify-between w-full p-2 rounded-lg border border-transparent hover:bg-slate-50 hover:text-slate-900 text-slate-700 transition-colors {{ Request::is('kelola-barang/*') ? 'bg-blue-50 text-blue-700 border-blue-100 shadow-sm' : '' }}"
                     aria-expanded="false" data-collapse-toggle="dropdown-barang">
                     <span class="flex items-center">
                         <i class="fa-solid fa-folder me-2"></i> Kelola Barang
@@ -104,19 +104,19 @@
                 <ul id="dropdown-barang" class="hidden py-2 space-y-2">
                     <li>
                         <a href="{{ route('barang') }}"
-                            class="flex gap-1 items-center w-full p-2 pl-11 rounded-lg hover:bg-blue-200 hover:text-white {{ request()->routeIs('barang') ? 'bg-blue-500 text-white' : '' }}">
+                            class="flex gap-1 items-center w-full p-2 pl-11 rounded-lg hover:bg-slate-50 hover:text-slate-900 text-slate-700 transition-colors {{ request()->routeIs('barang') ? 'bg-blue-50 text-blue-700 border border-blue-100 shadow-sm' : '' }}">
                             <i class="fa-solid fa-folder-open"></i> Data Barang
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('kategori') }}"
-                            class="flex gap-1 items-center w-full p-2 pl-11 rounded-lg hover:bg-blue-200 hover:text-white {{ request()->routeIs('kategori') ? 'bg-blue-500 text-white' : '' }}">
+                            class="flex gap-1 items-center w-full p-2 pl-11 rounded-lg hover:bg-slate-50 hover:text-slate-900 text-slate-700 transition-colors {{ request()->routeIs('kategori') ? 'bg-blue-50 text-blue-700 border border-blue-100 shadow-sm' : '' }}">
                             <i class="fa-solid fa-folder-open"></i> Data Kategori
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('satuan') }}"
-                            class="flex gap-1 items-center w-full p-2 pl-11 rounded-lg hover:bg-gray-100 {{ request()->routeIs('satuan') ? 'bg-gray-300' : '' }}">
+                            class="flex gap-1 items-center w-full p-2 pl-11 rounded-lg hover:bg-slate-50 hover:text-slate-900 text-slate-700 transition-colors {{ request()->routeIs('satuan') ? 'bg-blue-50 text-blue-700 border border-blue-100 shadow-sm' : '' }}">
                             <i class="fa-solid fa-folder-open"></i> Data Satuan
                         </a>
                     </li>
@@ -124,22 +124,22 @@
             </li>
             <li>
                 <a href="{{ route('verifikasi-permohonan') }}"
-                    class="flex items-center p-2 rounded-lg hover:bg-blue-200 hover:text-white {{ request()->routeIs('verifikasi-permohonan') ? 'bg-blue-500 text-white' : '' }}">
+                    class="flex items-center p-2 rounded-lg hover:bg-slate-50 hover:text-slate-900 text-slate-700 transition-colors {{ request()->routeIs('verifikasi-permohonan') ? 'bg-blue-50 text-blue-700 border border-blue-100 shadow-sm' : '' }}">
                     <i class="fa-solid fa-clipboard-check"></i>
                     <span class="ms-3">Verifikasi Permohonan</span>
                 </a>
             </li>
             <li>
                 <a href="{{ route('verifikasi-pengembalian') }}"
-                    class="flex items-center p-2 rounded-lg hover:bg-blue-200 hover:text-white {{ request()->routeIs('verifikasi-pengembalian') ? 'bg-blue-500 text-white' : '' }}">
+                    class="flex items-center p-2 rounded-lg hover:bg-slate-50 hover:text-slate-900 text-slate-700 transition-colors {{ request()->routeIs('verifikasi-pengembalian') ? 'bg-blue-50 text-blue-700 border border-blue-100 shadow-sm' : '' }}">
                     <i class="fa-solid fa-clipboard-check"></i>
                     <span class="ms-3">Verifikasi Pengembalian</span>
                 </a>
             </li>
             <li>
                 <a href="{{ route('laporan') }}"
-                    class="flex items-center p-2 rounded-lg hover:bg-blue-200 hover:text-white
-                    {{ request()->routeIs('laporan') ? 'bg-blue-500 text-white' : '' }}">
+                    class="flex items-center p-2 rounded-lg hover:bg-slate-50 hover:text-slate-900 text-slate-700 transition-colors
+                    {{ request()->routeIs('laporan') ? 'bg-blue-50 text-blue-700 border border-blue-100 shadow-sm' : '' }}">
                     <i class="fa-solid fa-file-invoice"></i>
                     <span class="ms-3">Laporan</span>
                 </a>

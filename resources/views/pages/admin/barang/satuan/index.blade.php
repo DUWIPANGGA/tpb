@@ -11,17 +11,17 @@
             </script>
         @endif
 
-        <div class="space-y-4 rounded-lg mt-14">
-            <div class="p-4 bg-white rounded-lg shadow-lg flex justify-between items-center">
+        <div class="space-y-4 rounded-lg mt-4">
+            <div class="p-4 bg-white rounded-xl shadow-sm border border-gray-100 flex justify-between items-center">
                 <p class="text-lg font-semibold">Satuan</p>
                 <button type="button" data-modal-target="add" data-modal-toggle="add"
-                    class="px-2 py-1 bg-blue-200 rounded-lg cursor-pointer">
+                    class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 transition-colors">
                     <i class="fa-solid fa-plus"></i>
                 </button>
                 @include('components.modal.tambah-satuan')
             </div>
 
-            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <div class="relative overflow-x-auto bg-white shadow-sm border border-gray-200 sm:rounded-xl">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                         <tr>
@@ -67,8 +67,8 @@
                     </tbody>
                 </table>
             </div>
-            <div>
-                {{ $satuan->links() }}
+            <div class="pt-2">
+                {{ $satuan->links('components.pagination.blue') }}
             </div>
         </div>
     </div>

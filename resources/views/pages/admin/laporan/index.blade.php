@@ -21,16 +21,16 @@
             </script>
         @endif
 
-        <div class="space-y-4 rounded-lg mt-14">
-            <div class="p-4 bg-white rounded-lg shadow-lg flex justify-between items-center">
+        <div class="space-y-4 rounded-lg mt-4">
+            <div class="p-4 bg-white rounded-xl shadow-sm border border-gray-100 flex justify-between items-center">
                 <p class="text-lg font-semibold">Laporan</p>
                 <a href="{{ route('laporan.export') }}"
-                    class="flex bg-green-500 text-white px-2 py-2 rounded hover:bg-green-600">
-                    <i class="fa-solid fa-file-pdf mr-1"></i>
+                    class="flex items-center rounded-lg bg-blue-600 px-3 py-2 text-white transition-colors hover:bg-blue-700">
+                    <i class="fa-solid fa-file-pdf mr-2"></i>
                 </a>
             </div>
 
-            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <div class="relative overflow-x-auto bg-white shadow-sm border border-gray-200 sm:rounded-xl">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                         <tr>
@@ -61,20 +61,21 @@
                                 </td>
                                 <td class="flex items-center gap-2 px-6 py-4">
                                     <button type="button" data-modal-target="permohonan{{ $mahasiswa_id }}"
-                                        data-modal-toggle="permohonan{{ $mahasiswa_id }}"
-                                        class="flex items-center px-2 py-2 text-sm text-white bg-yellow-400 rounded">
+                                        data-modal-toggle="permohonan{{ $mahasiswa_id }}" class="ui-btn ui-btn-primary">
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
 
                                     @include('components.modal.laporan', [
                                         'data' => $data,
                                     ])
-                                    </td>
-                                </tr>
+                                </td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
+            <div class="pt-2">
+                {{ $laporan->links('components.pagination.blue') }}
             </div>
         </div>
-@endsection
+    @endsection

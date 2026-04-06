@@ -8,7 +8,7 @@
             transition: transform 0.3s ease;
         }
     </style>
-    <div class="max-w-screen-xl p-4 mx-auto space-y-3">
+    <div class="max-w-screen-xl px-4 py-6 mx-auto space-y-3">
         @if (session('success'))
             <script>
                 Swal.fire({
@@ -29,11 +29,11 @@
             </script>
         @endif
 
-        <div class="mt-5 bg-white p-4 text-blue-500 rounded-xl text-2xl font-semibold text-center shadow-lg">
+        <div class="mb-6 text-2xl font-bold text-gray-800">
             Pengembalian
         </div>
 
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <div class="relative overflow-x-auto bg-white shadow-sm border border-gray-200 sm:rounded-xl">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
@@ -58,7 +58,7 @@
                             <td class="flex items-center gap-2 px-6 py-4">
                                 <button type="button" data-modal-target="permohonan{{ $mahasiswa_id }}"
                                     data-modal-toggle="permohonan{{ $mahasiswa_id }}"
-                                    class="flex items-center px-2 py-2 text-sm text-white bg-yellow-400 rounded hover:bg-yellow-500 transition">
+                                    class="flex items-center rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700">
                                     <i class="fa-solid fa-eye"></i>
                                 </button>
 

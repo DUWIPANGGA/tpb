@@ -13,8 +13,11 @@ class PengembalianController extends Controller
 {
     public function index()
     {
-        if (auth()->check()) {
-            $dataKeranjang = Keranjang::where('mahasiswa_id', auth()->id())
+        $dataKeranjang = collect();
+        $notifikasiKeranjang = 0;
+
+        if (auth('ormawa')->check()) {
+            $dataKeranjang = Keranjang::where('mahasiswa_id', auth('ormawa')->id())
                 ->with('barang')
                 ->get();
 

@@ -1,14 +1,15 @@
 @extends('pages.admin.index')
 @section('content')
     <div class="p-4 sm:ml-64 mt-5">
-        <div class="space-y-4 rounded-lg mt-14">
-            <div class="space-y-4 rounded-lg mt-14">
-                <div class="p-4 bg-white rounded-lg shadow-lg flex items-center">
+        <div class="space-y-4 rounded-lg mt-4">
+            <div class="space-y-4 rounded-lg mt-4">
+                <div class="p-4 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center">
                     <p class="text-lg font-semibold">Dashboard</p>
                 </div>
                 <div class="grid grid-cols-1 gap-2 md:grid-cols-4">
                     <a href="{{ route('mahasiswa') }}" class="block">
-                        <div class="p-4 bg-white rounded-lg shadow-lg hover:bg-gray-100 transition">
+                        <div
+                            class="p-4 bg-white rounded-xl shadow-sm border border-gray-100 transition-colors hover:border-slate-200 hover:shadow-md">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-lg font-semibold">Mahasiswa</p>
@@ -21,7 +22,8 @@
                         </div>
                     </a>
                     <a href="{{ route('barang') }}" class="block">
-                        <div class="p-4 bg-white rounded-lg shadow-lg hover:bg-gray-100 transition">
+                        <div
+                            class="p-4 bg-white rounded-xl shadow-sm border border-gray-100 transition-colors hover:border-slate-200 hover:shadow-md">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-lg font-semibold">Barang</p>
@@ -34,7 +36,8 @@
                         </div>
                     </a>
                     <a href="#" class="block">
-                        <div class="p-4 bg-white rounded-lg shadow-lg hover:bg-gray-100 transition">
+                        <div
+                            class="p-4 bg-white rounded-xl shadow-sm border border-gray-100 transition-colors hover:border-slate-200 hover:shadow-md">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-lg font-semibold">Peminjaman</p>
@@ -47,7 +50,8 @@
                         </div>
                     </a>
                     <a href="#" class="block">
-                        <div class="p-4 bg-white rounded-lg shadow-lg hover:bg-gray-100 transition">
+                        <div
+                            class="p-4 bg-white rounded-xl shadow-sm border border-gray-100 transition-colors hover:border-slate-200 hover:shadow-md">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-lg font-semibold">Pengembalian</p>

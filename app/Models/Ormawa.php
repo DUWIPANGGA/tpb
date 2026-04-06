@@ -5,17 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Model;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\HasApiTokens;
 
 class Ormawa extends Model
 {
-    use HasFactory;
+    use HasApiTokens, HasFactory;
 
     protected $table = 'ormawas';
 
-    protected $fillable = ['name', 'nim',  'organisasi', 'password'];
+    protected $fillable = ['name', 'nim',  'organisasi', 'password', 'active_session_nonce'];
 
     protected $hidden = [
         'password',
+        'active_session_nonce',
     ];
 
     protected $casts = [

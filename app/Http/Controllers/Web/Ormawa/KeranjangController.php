@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web\Ormawa;
 use App\Http\Controllers\Controller;
 use App\Models\Keranjang;
 use App\Models\Permohonan;
+use App\Support\PaginationPerPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -12,17 +13,20 @@ class KeranjangController extends Controller
 {
     public function index()
     {
-        $keranjang = Keranjang::where('mahasiswa_id', auth()->id())
-            ->with('barang.kategori')
-            ->get();
+        $dataKeranjang = collect();
+        $notifikasiKeranjang = 0;
 
-        if (auth()->check()) {
-            $dataKeranjang = Keranjang::where('mahasiswa_id', auth()->id())
+        $keranjang = Keranjang::where('mahasiswa_id', auth('ormawa')->id())
+            ->with('barang.kategori')
+            ->paginate(PaginationPerPage::resolve());
+
+        if (auth('ormawa')->check()) {
+            $dataKeranjang = Keranjang::where('mahasiswa_id', auth('ormawa')->id())
                 ->with('barang')
                 ->get();
 
             // Hitung jumlah total item di keranjang
-            $notifikasiKeranjang = $dataKeranjang->sum('barang_id');
+            $notifikasiKeranjang = $dataKeranjang->count();
         }
 
         return view("pages.ormawa.keranjang.index", compact("keranjang", 'dataKeranjang', 'notifikasiKeranjang'));
@@ -38,7 +42,7 @@ class KeranjangController extends Controller
             'waktu_selesai' => 'required',
         ]);
 
-        $keranjangItems = Keranjang::where('mahasiswa_id', auth()->id())->with('barang')->get();
+        $keranjangItems = Keranjang::where('mahasiswa_id', auth('ormawa')->id())->with('barang')->get();
 
         if ($keranjangItems->isEmpty()) {
             return redirect()->back()->with('error', 'Keranjang kosong.');
@@ -53,7 +57,7 @@ class KeranjangController extends Controller
                     'hari_atau_tanggal' => $request->hari_atau_tanggal,
                     'waktu_mulai' => $request->waktu_mulai,
                     'waktu_selesai' => $request->waktu_selesai,
-                    'mahasiswa_id' => auth()->id(),
+                    'mahasiswa_id' => auth('ormawa')->id(),
                     'phone' => $request->phone,
                     'barang_id' => $item->barang_id,
                     'jumlah' => $item->jumlah,
@@ -61,7 +65,7 @@ class KeranjangController extends Controller
             }
 
             // Hapus semua item di keranjang setelah permohonan dibuat
-            Keranjang::where('mahasiswa_id', auth()->id())->delete();
+            Keranjang::where('mahasiswa_id', auth('ormawa')->id())->delete();
 
             DB::commit();
             return redirect()->back()->with('success', 'Permohonan berhasil dibuat.');
@@ -73,7 +77,7 @@ class KeranjangController extends Controller
 
     public function destroy($id)
     {
-        $keranjang = Keranjang::where('id', $id)->where('mahasiswa_id', auth()->id())->firstOrFail();
+        $keranjang = Keranjang::where('id', $id)->where('mahasiswa_id', auth('ormawa')->id())->firstOrFail();
         $keranjang->delete();
 
         return redirect()->back()->with('success', 'Barang berhasil dihapus dari keranjang.');

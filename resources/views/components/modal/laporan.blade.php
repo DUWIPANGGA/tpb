@@ -23,10 +23,14 @@
                             @endphp
                             <div class="flex items-center gap-3">
                                 @if ($barang?->foto)
-                                    <img src="{{ asset('storage/' . $barang->foto) }}" class="w-12 h-12 object-cover rounded"
+                                    <img src="{{ asset('storage/' . $barang->foto) }}"
+                                        class="h-12 w-12 rounded-lg border border-gray-200 object-cover"
                                         alt="{{ $barang->nama_barang }}">
                                 @else
-                                    <i class="fa-regular fa-image text-gray-400 text-4xl"></i>
+                                    <div
+                                        class="flex h-12 w-12 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-gray-300">
+                                        <i class="fa-regular fa-image"></i>
+                                    </div>
                                 @endif
 
                                 <div class="flex flex-col">
@@ -34,18 +38,21 @@
                                         <p class="text-sm font-semibold text-gray-900">
                                             {{ $barang?->nama_barang ?? 'Barang tidak tersedia' }}</p>
                                         <span
-                                            class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                            class="rounded-full border border-blue-100 bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
                                             Jumlah Pinjam: {{ $item->permohonan?->jumlah ?? '-' }}
                                         </span>
                                     </div>
                                     <div class="flex flex-wrap gap-2 mt-1">
-                                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                        <span
+                                            class="rounded-full border border-blue-100 bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
                                             {{ $barang?->kategori?->nama_kategori ?? 'Kategori tidak tersedia' }}
                                         </span>
-                                        <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                        <span
+                                            class="rounded-full border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
                                             {{ $barang?->satuan?->nama_satuan ?? 'Satuan tidak tersedia' }}
                                         </span>
-                                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                        <span
+                                            class="rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700">
                                             {{ $item->status_pengembalian ?? 'Status tidak tersedia' }}
                                         </span>
                                     </div>
