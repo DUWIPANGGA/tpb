@@ -27,14 +27,14 @@ class KeranjangController extends ApiController
             ->paginate($perPage)
             ->appends($request->query());
 
-        $items = collect($paginator->items())->map(function (Keranjang $keranjang) {
+        $items = collect($paginator->items())->map(function (Keranjang $keranjang) use ($request) {
             return [
                 'id' => $keranjang->id,
                 'jumlah' => $keranjang->jumlah,
                 'barang' => [
                     'id' => $keranjang->barang?->id,
                     'nama_barang' => $keranjang->barang?->nama_barang,
-                    'foto_url' => $keranjang->barang?->foto ? asset('storage/' . $keranjang->barang->foto) : null,
+                    'foto_url' => $this->storageUrl($request, $keranjang->barang?->foto),
                     'kategori' => $keranjang->barang?->kategori,
                     'satuan' => $keranjang->barang?->satuan,
                     'stock' => $keranjang->barang?->stock,
@@ -169,5 +169,14 @@ class KeranjangController extends ApiController
         $item->delete();
 
         return $this->success(null, 'Item keranjang berhasil dihapus.');
+    }
+
+    private function storageUrl(Request $request, ?string $path): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+
+        return rtrim($request->getSchemeAndHttpHost(), '/') . '/storage/' . ltrim($path, '/');
     }
 }

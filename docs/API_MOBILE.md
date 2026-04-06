@@ -33,11 +33,11 @@ Format response:
 - API **hanya untuk akun ormawa**.
 - Admin tidak bisa login API mobile.
 - Auth menggunakan **Sanctum Bearer Token**.
-- Semua endpoint API memakai rate limit: **10 request/menit**.
+- Semua endpoint API memakai rate limit: **25 request/menit**.
 - Middleware proteksi:
     - `auth:sanctum`
     - `ormawa.api` (cek token ability + model harus Ormawa)
-    - `throttle:10,1`
+    - `throttle:25,1`
 - Single session lintas platform:
     - Jika login di web, sesi mobile lama akan habis.
     - Jika login di mobile, sesi web lama akan habis.
@@ -204,7 +204,7 @@ Catatan: endpoint yang sama menerima `name` **atau** `nim` + `password`.
 - `401 Unauthorized` + `code: SESSION_EXPIRED`: sesi digantikan oleh login di perangkat/platform lain.
 - `403 Forbidden`: user bukan ormawa atau token ability tidak cocok.
 - `422 Unprocessable Entity`: validasi gagal.
-- `429 Too Many Requests`: melebihi 10 request per menit.
+- `429 Too Many Requests`: melebihi 25 request per menit.
 
 ## Contoh Header Standar Flutter
 
