@@ -1,8 +1,8 @@
 @extends('pages.admin.index')
 @section('content')
-    <div class="p-4 sm:ml-64 mt-5">
-        <div class="space-y-4 rounded-lg mt-4">
-            <div class="space-y-4 rounded-lg mt-4">
+    <div class="p-4 sm:ml-64">
+        <div class="space-y-4 rounded-lg">
+            <div class="space-y-4 rounded-lg">
                 <div class="p-4 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center">
                     <p class="text-lg font-semibold">Dashboard</p>
                 </div>

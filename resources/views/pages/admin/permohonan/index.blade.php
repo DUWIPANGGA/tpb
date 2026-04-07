@@ -1,6 +1,6 @@
 @extends('pages.admin.index')
 @section('content')
-    <div class="p-4 sm:ml-64 mt-5">
+    <div class="p-4 sm:ml-64">
         @if (session('success'))
             <script>
                 Swal.fire({
@@ -11,7 +11,7 @@
             </script>
         @endif
 
-        <div class="space-y-4 rounded-lg mt-4">
+        <div class="space-y-4 rounded-lg">
             <div class="p-4 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center">
                 <p class="text-lg font-semibold">Verifikasi Permohonan</p>
             </div>
@@ -33,7 +33,7 @@
                     <tbody>
                         @foreach ($dataPermohonan as $mahasiswa_id => $data)
                             <tr class="odd:bg-white even:bg-gray-50 border-b border-gray-200">
-                                <td class="px-6 py-4">{{ $loop->iteration }}</td>
+                                <td class="px-6 py-4">{{ $dataPermohonan->firstItem() + $loop->index }}</td>
                                 <td class="px-6 py-4">{{ $data->first()->unit_kerja }}</td>
                                 <td class="px-6 py-4">{{ $data->first()->nama_kegiatan }}</td>
                                 <td class="px-6 py-4">

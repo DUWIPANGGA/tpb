@@ -4,14 +4,13 @@ namespace App\Http\Controllers\Web\Admin\Barang\Satuan;
 
 use App\Http\Controllers\Controller;
 use App\Models\Satuan;
-use App\Support\PaginationPerPage;
 use Illuminate\Http\Request;
 
 class SatuanController extends Controller
 {
     public function index()
     {
-        $satuan = Satuan::paginate(PaginationPerPage::resolve());
+        $satuan = Satuan::orderByDesc('id')->paginate(10);
         return view("pages.admin.barang.satuan.index", compact("satuan"));
     }
 

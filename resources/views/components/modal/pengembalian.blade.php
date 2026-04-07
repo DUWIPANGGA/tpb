@@ -18,8 +18,40 @@
                 </button>
             </div>
             <div class="p-4 md:p-5">
+                @php
+                    $firstItem = $data->first();
+                    $isApproved = $firstItem->status === 'Disetujui';
+                    $isAlreadyReturned = optional($firstItem->pengembalian)->status_pengembalian === 'Diterima';
+                    $isRejected =
+                        $firstItem->status === 'Ditolak' ||
+                        optional($firstItem->pengembalian)->status_pengembalian === 'Ditolak';
+                    $canSubmit = $isApproved && !$isAlreadyReturned && !$isRejected;
+                @endphp
+
+                @if (!$isApproved)
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-yellow-800">
+                            <strong>⚠️ Perhatian:</strong> Permohonan belum disetujui. Anda hanya dapat mengembalikan
+                            barang setelah permohonan disetujui.
+                        </p>
+                    </div>
+                @elseif ($isAlreadyReturned)
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-green-800">
+                            <strong>✓ Informasi:</strong> Barang telah dikembalikan dan diterima.
+                        </p>
+                    </div>
+                @elseif ($isRejected)
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-red-800">
+                            <strong>✗ Informasi:</strong> Permohonan ditolak. Tidak dapat melakukan pengembalian untuk
+                            permohonan yang ditolak.
+                        </p>
+                    </div>
+                @endif
+
                 <form action="{{ route('pengembalian.store', $data->first()->id) }}" method="POST"
-                    enctype="multipart/form-data">
+                    enctype="multipart/form-data" {{ !$canSubmit ? 'id=disabledForm' : '' }}>
                     @csrf
                     <div class="max-w-screen-xl mx-auto">
                         <div class="space-y-3">
@@ -101,13 +133,14 @@
                                             Foto</label>
                                         <input type="file"
                                             class="w-full px-4 text-sm text-gray-900 border border-gray-300 rounded-lg focus:border-transparent"
-                                            name="bukti_foto" id="bukti_foto" />
+                                            name="bukti_foto" id="bukti_foto" {{ !$canSubmit ? 'disabled' : '' }} />
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <button type="submit"
-                            class="w-full mt-4 rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-blue-700">Simpan</button>
+                            class="w-full mt-4 rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            {{ !$canSubmit ? 'disabled' : '' }}>Simpan</button>
                     </div>
                 </form>
             </div>

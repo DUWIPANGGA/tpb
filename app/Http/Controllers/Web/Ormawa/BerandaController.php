@@ -19,7 +19,7 @@ class BerandaController extends Controller
 
         $dataBarang = Barang::when($search, function ($query) use ($search) {
             return $query->where('nama_barang', 'like', '%' . $search . '%');
-        })->paginate(PaginationPerPage::resolve());
+        })->orderBy('id', 'desc')->paginate(6);
 
         if (auth('ormawa')->check()) {
             $dataKeranjang = Keranjang::where('mahasiswa_id', auth('ormawa')->id())

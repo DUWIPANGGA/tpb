@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Keranjang;
 use App\Models\Pengembalian;
 use App\Models\Permohonan;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -25,9 +26,36 @@ class PengembalianController extends Controller
             $notifikasiKeranjang = $dataKeranjang->sum('barang_id');
         }
 
-        $dataPermohonan = Permohonan::where('mahasiswa_id', auth('ormawa')->id())
+        $kegiatanPaginator = Permohonan::where('mahasiswa_id', auth('ormawa')->id())
+            ->selectRaw('nama_kegiatan, MAX(id) as latest_id')
+            ->groupBy('nama_kegiatan')
+            ->orderByDesc('latest_id')
+            ->paginate(10);
+
+        $kegiatanNames = collect($kegiatanPaginator->items())
+            ->pluck('nama_kegiatan')
+            ->values();
+
+        $groupedPermohonan = Permohonan::where('mahasiswa_id', auth('ormawa')->id())
+            ->whereIn('nama_kegiatan', $kegiatanNames)
+            ->orderByDesc('id')
             ->get()
             ->groupBy('nama_kegiatan');
+
+        $orderedGroups = $kegiatanNames->mapWithKeys(function ($namaKegiatan) use ($groupedPermohonan) {
+            return [$namaKegiatan => $groupedPermohonan->get($namaKegiatan, collect())];
+        });
+
+        $dataPermohonan = new LengthAwarePaginator(
+            $orderedGroups,
+            $kegiatanPaginator->total(),
+            $kegiatanPaginator->perPage(),
+            $kegiatanPaginator->currentPage(),
+            [
+                'path' => request()->url(),
+                'query' => request()->query(),
+            ]
+        );
 
         return view("pages.ormawa.pengembalian.index", compact("dataKeranjang", "notifikasiKeranjang", "dataPermohonan"));
     }

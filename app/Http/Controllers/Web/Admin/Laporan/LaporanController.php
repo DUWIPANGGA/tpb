@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Web\Admin\Laporan;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pengembalian;
-use App\Support\PaginationPerPage;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -14,7 +13,7 @@ class LaporanController extends Controller
     {
         $paginator = Pengembalian::with(['mahasiswa', 'permohonan.barang.kategori', 'permohonan.barang.satuan'])
             ->orderByDesc('id')
-            ->paginate(PaginationPerPage::resolve());
+            ->paginate(10);
 
         $laporan = new LengthAwarePaginator(
             collect($paginator->items())->groupBy('permohonans_id'),
