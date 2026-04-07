@@ -4,14 +4,13 @@ namespace App\Http\Controllers\Web\Admin\Barang\Kategori;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
-use App\Support\PaginationPerPage;
 use Illuminate\Http\Request;
 
 class KategoriController extends Controller
 {
     public function index()
     {
-        $kategori = Kategori::paginate(PaginationPerPage::resolve());
+        $kategori = Kategori::orderByDesc('id')->paginate(10);
         return view("pages.admin.barang.kategori.index", compact("kategori"));
     }
 

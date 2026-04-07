@@ -28,43 +28,47 @@ class InformasiController extends Controller
 
     public function json()
     {
-        $permohonan = Permohonan::selectRaw('
-                permohonans.unit_kerja,
-                permohonans.nama_kegiatan,
-                permohonans.status,
-                MIN(permohonans.hari_atau_tanggal) as start_date,
-                pengembalians.status_pengembalian
-            ')
-            ->leftJoin('pengembalians', 'pengembalians.permohonans_id', '=', 'permohonans.id')
-            ->groupBy('permohonans.unit_kerja', 'permohonans.nama_kegiatan', 'permohonans.status', 'pengembalians.status_pengembalian')
+        $permohonan = Permohonan::where('mahasiswa_id', auth('ormawa')->id())
+            ->with('pengembalian')
             ->get();
 
         if ($permohonan->isEmpty()) {
             return response()->json([]);
         }
 
-        $events = $permohonan->map(function ($item) {
-            // Warna berdasarkan status pengembalian
-            if ($item->status == 'Disetujui' && $item->status_pengembalian == 'Diterima') {
-                $color = '#0000ff '; // Biru
-            } elseif ($item->status == 'Disetujui') {
-                $color = '#008000 '; // Hijau
-            } elseif ($item->status == 'Ditolak') {
+        // Group by date and consolidate units
+        $eventsByDate = $permohonan->groupBy(function ($item) {
+            return $item->hari_atau_tanggal;
+        })->map(function ($itemsOnDate) {
+            // For same date, group by unit_kerja
+            $unitGrouped = $itemsOnDate->groupBy('unit_kerja');
+            $unitList = $unitGrouped->keys()->implode(', ');
+
+            // Get overall status (Ditolak > Menunggu > Disetujui for color priority)
+            $status = $itemsOnDate->first()->status;
+            $statusPengembalian = $itemsOnDate->first()->pengembalian->status_pengembalian ?? 'Belum dikembalikan';
+
+            // Color logic
+            if ($status == 'Disetujui' && $statusPengembalian == 'Diterima') {
+                $color = '#0000ff'; // Biru
+            } elseif ($status == 'Disetujui') {
+                $color = '#008000'; // Hijau
+            } elseif ($status == 'Ditolak') {
                 $color = '#FF0000'; // Merah
             } else {
-                $color = '#808080'; // Abu-abu (default)
+                $color = '#808080'; // Abu-abu
             }
 
             return [
-                'title' => $item->unit_kerja,
-                'description' => $item->unit_kerja . " - " . $item->nama_kegiatan,
-                'status' => $item->status,
-                'start' => $item->start_date ? date('Y-m-d', strtotime($item->start_date)) : null,
-                'color' => $color, // Pastikan warna dikirim
-                'status_pengembalian' => $item->status_pengembalian ?? 'Belum dikembalikan',
+                'title' => $unitList,
+                'description' => $unitList,
+                'status' => $status,
+                'start' => $itemsOnDate->first()->hari_atau_tanggal,
+                'color' => $color,
+                'status_pengembalian' => $statusPengembalian,
             ];
         });
 
-        return response()->json($events);
+        return response()->json($eventsByDate->values());
     }
 }

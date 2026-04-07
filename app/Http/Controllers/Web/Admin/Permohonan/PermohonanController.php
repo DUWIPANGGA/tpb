@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Web\Admin\Permohonan;
 use App\Http\Controllers\Controller;
 use App\Models\Permohonan;
 use App\Models\Stock;
-use App\Support\PaginationPerPage;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 
@@ -13,15 +12,30 @@ class PermohonanController extends Controller
 {
     public function index()
     {
-        $paginator = Permohonan::with(['mahasiswa', 'barang.kategori', 'barang.satuan'])
+        $kegiatanPaginator = Permohonan::selectRaw('nama_kegiatan, MAX(id) as latest_id')
+            ->groupBy('nama_kegiatan')
+            ->orderByDesc('latest_id')
+            ->paginate(10);
+
+        $kegiatanNames = collect($kegiatanPaginator->items())
+            ->pluck('nama_kegiatan')
+            ->values();
+
+        $groupedPermohonan = Permohonan::with(['mahasiswa', 'barang.kategori', 'barang.satuan'])
+            ->whereIn('nama_kegiatan', $kegiatanNames)
             ->orderByDesc('id')
-            ->paginate(PaginationPerPage::resolve());
+            ->get()
+            ->groupBy('nama_kegiatan');
+
+        $orderedGroups = $kegiatanNames->mapWithKeys(function ($namaKegiatan) use ($groupedPermohonan) {
+            return [$namaKegiatan => $groupedPermohonan->get($namaKegiatan, collect())];
+        });
 
         $dataPermohonan = new LengthAwarePaginator(
-            collect($paginator->items())->groupBy('nama_kegiatan'),
-            $paginator->total(),
-            $paginator->perPage(),
-            $paginator->currentPage(),
+            $orderedGroups,
+            $kegiatanPaginator->total(),
+            $kegiatanPaginator->perPage(),
+            $kegiatanPaginator->currentPage(),
             [
                 'path' => request()->url(),
                 'query' => request()->query(),

@@ -241,12 +241,16 @@ class TransaksiController extends ApiController
             ->where('nama_kegiatan', $target->nama_kegiatan)
             ->pluck('id');
 
-        $alreadyReturned = Pengembalian::query()
-            ->select(['id'])
+        $existingReturns = Pengembalian::query()
             ->whereIn('permohonans_id', $permohonanIds)
-            ->exists();
+            ->get()
+            ->keyBy('permohonans_id');
 
-        if ($alreadyReturned) {
+        $hasNonRejectedReturn = $existingReturns->contains(function (Pengembalian $item) {
+            return strtolower(trim((string) $item->status_pengembalian)) !== 'ditolak';
+        });
+
+        if ($hasNonRejectedReturn) {
             return $this->error('Pengembalian untuk kegiatan ini sudah pernah diajukan.', [], 422);
         }
 
@@ -256,6 +260,16 @@ class TransaksiController extends ApiController
 
         try {
             foreach ($permohonanIds as $id) {
+                $existing = $existingReturns->get($id);
+
+                if ($existing) {
+                    $existing->update([
+                        'bukti_foto' => $storedPath,
+                        'status_pengembalian' => 'Menunggu',
+                    ]);
+                    continue;
+                }
+
                 Pengembalian::create([
                     'permohonans_id' => $id,
                     'mahasiswa_id' => $user->id,

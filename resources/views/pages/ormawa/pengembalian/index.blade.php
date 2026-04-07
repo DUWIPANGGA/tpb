@@ -41,6 +41,8 @@
                         <th scope="col" class="px-6 py-3">Nama Mahasiswa</th>
                         <th scope="col" class="px-6 py-3">Unit Kerja</th>
                         <th scope="col" class="px-6 py-3">Nama Kegiatan</th>
+                        <th scope="col" class="px-6 py-3">Status Permohonan</th>
+                        <th scope="col" class="px-6 py-3">Status Pengembalian</th>
                         <th scope="col" class="px-6 py-3">Aksi</th>
                     </tr>
                 </thead>
@@ -48,13 +50,35 @@
                     @foreach ($dataPermohonan as $mahasiswa_id => $data)
                         <tr class="odd:bg-white even:bg-gray-50 border-b border-gray-200">
                             <td class="px-6 py-4">
-                                {{ $loop->iteration }}
+                                {{ $dataPermohonan->firstItem() + $loop->index }}
                             </td>
                             <td class="px-6 py-4">
                                 {{ $data->first()->mahasiswa->name }}
                             </td>
                             <td class="px-6 py-4">{{ $data->first()->unit_kerja }}</td>
                             <td class="px-6 py-4">{{ $data->first()->nama_kegiatan }}</td>
+                            <td class="px-6 py-4">
+                                <span
+                                    class="ui-badge
+                                    {{ $data->first()->status == 'Disetujui'
+                                        ? 'ui-badge-success'
+                                        : ($data->first()->status == 'Ditolak'
+                                            ? 'ui-badge-danger'
+                                            : 'ui-badge-warning') }}">
+                                    {{ $data->first()->status }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span
+                                    class="ui-badge
+                                    {{ optional($data->first()->pengembalian)->status_pengembalian == 'Diterima'
+                                        ? 'ui-badge-success'
+                                        : (optional($data->first()->pengembalian)->status_pengembalian == 'Menunggu'
+                                            ? 'ui-badge-warning'
+                                            : 'ui-badge-danger') }}">
+                                    {{ optional($data->first()->pengembalian)->status_pengembalian ?? 'Belum dikembalikan' }}
+                                </span>
+                            </td>
                             <td class="flex items-center gap-2 px-6 py-4">
                                 <button type="button" data-modal-target="permohonan{{ $mahasiswa_id }}"
                                     data-modal-toggle="permohonan{{ $mahasiswa_id }}"
@@ -70,6 +94,10 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+
+        <div class="mt-4">
+            {{ $dataPermohonan->links('components.pagination.blue') }}
         </div>
     </div>
 @endsection

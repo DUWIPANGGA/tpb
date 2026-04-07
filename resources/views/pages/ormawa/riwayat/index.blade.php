@@ -24,7 +24,7 @@
                 <tbody>
                     @forelse ($dataPermohonan as $index => $item)
                         <tr class="odd:bg-white even:bg-gray-50 border-b border-gray-200">
-                            <td class="px-6 py-4">{{ $index + 1 }}</td>
+                            <td class="px-6 py-4">{{ $dataPermohonan->firstItem() + $loop->index }}</td>
                             <td class="px-6 py-4">
                                 {{ optional(optional($item->pengembalian)->mahasiswa)->name ?? auth('ormawa')->user()->name }}
                             </td>
@@ -115,6 +115,10 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        <div class="mt-4">
+            {{ $dataPermohonan->links('components.pagination.blue') }}
         </div>
     </div>
 @endsection

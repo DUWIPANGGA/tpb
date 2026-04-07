@@ -21,7 +21,25 @@ class BarangController extends ApiController
             ]);
 
         if ($search !== '') {
-            $query->where('nama_barang', 'like', '%' . $search . '%');
+            $normalizedSearch = strtolower($search);
+            $tokens = collect(preg_split('/\s+/', $normalizedSearch) ?: [])
+                ->filter(fn($token) => $token !== '')
+                ->take(3)
+                ->values();
+
+            $query->where(function ($builder) use ($normalizedSearch, $tokens) {
+                $builder->whereRaw('LOWER(nama_barang) LIKE ?', [$normalizedSearch . '%'])
+                    ->orWhereRaw('LOWER(nama_barang) LIKE ?', ['% ' . $normalizedSearch . '%'])
+                    ->orWhereRaw('LOWER(nama_barang) LIKE ?', ['%' . $normalizedSearch . '%']);
+
+                foreach ($tokens as $token) {
+                    $builder->orWhereRaw('LOWER(nama_barang) LIKE ?', [$token . '%'])
+                        ->orWhereRaw('LOWER(nama_barang) LIKE ?', ['% ' . $token . '%']);
+                }
+            });
+
+            $query->orderByRaw('CASE WHEN LOWER(nama_barang) LIKE ? THEN 0 ELSE 1 END', [$normalizedSearch . '%'])
+                ->orderByRaw('CASE WHEN LOWER(nama_barang) LIKE ? THEN 0 ELSE 1 END', ['% ' . $normalizedSearch . '%']);
         }
 
         $paginator = $query

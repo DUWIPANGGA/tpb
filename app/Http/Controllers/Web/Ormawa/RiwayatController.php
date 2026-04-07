@@ -25,7 +25,8 @@ class RiwayatController extends Controller
             // Ambil data Permohonan dan Pengembalian berdasarkan mahasiswa_id
             $dataPermohonan = Permohonan::where('mahasiswa_id', auth('ormawa')->id())
                 ->with('barang', 'pengembalian')
-                ->get();
+                ->orderBy('id', 'desc')
+                ->paginate(10);
         }
 
         return view("pages.ormawa.riwayat.index", compact("dataKeranjang", "notifikasiKeranjang", "dataPermohonan"));

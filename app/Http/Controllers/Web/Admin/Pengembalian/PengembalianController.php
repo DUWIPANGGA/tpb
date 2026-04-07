@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Web\Admin\Pengembalian;
 use App\Http\Controllers\Controller;
 use App\Models\Pengembalian;
 use App\Models\Stock;
-use App\Support\PaginationPerPage;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +15,7 @@ class PengembalianController extends Controller
     {
         $paginator = Pengembalian::with(['permohonan.barang.kategori', 'permohonan.barang.satuan'])
             ->orderByDesc('id')
-            ->paginate(PaginationPerPage::resolve());
+            ->paginate(10);
 
         $dataPengembalian = new LengthAwarePaginator(
             collect($paginator->items())->groupBy('permohonans_id'),
