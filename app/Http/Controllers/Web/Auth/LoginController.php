@@ -21,7 +21,7 @@ class LoginController extends Controller
             return redirect()->route('beranda');
         }
 
-        return view('pages.Auth.Login.index');
+        return view('pages.auth.login.index');
     }
 
     public function store(Request $request)

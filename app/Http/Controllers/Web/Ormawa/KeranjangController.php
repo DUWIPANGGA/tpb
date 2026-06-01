@@ -37,9 +37,10 @@ class KeranjangController extends Controller
         $request->validate([
             'unit_kerja' => 'required|string',
             'nama_kegiatan' => 'required|string',
-            'hari_atau_tanggal' => 'required|date',
-            'waktu_mulai' => 'required',
-            'waktu_selesai' => 'required',
+            'hari_atau_tanggal' => 'required|date|after_or_equal:today',
+            'waktu_mulai' => 'required|date_format:H:i',
+            'waktu_selesai' => 'required|date_format:H:i',
+            'phone' => 'required|string|regex:/^[0-9+\-\s]+$/',
         ]);
 
         $keranjangItems = Keranjang::where('mahasiswa_id', auth('ormawa')->id())->with('barang')->get();

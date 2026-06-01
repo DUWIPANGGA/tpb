@@ -1,0 +1,3 @@
+NO TESTCASE: 34
+SKENARIO: Permohonan: Submit form wajib kosong
+HASIL: Menampilkan alert "Validasi Gagal!" dengan daftar field kosong.

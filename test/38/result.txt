@@ -1,0 +1,3 @@
+NO TESTCASE: 38
+SKENARIO: Permohonan: Submit phone invalid
+HASIL: Menampilkan alert "Validasi Gagal!" karena nomor telepon mengandung huruf.

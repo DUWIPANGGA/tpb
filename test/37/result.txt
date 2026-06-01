@@ -1,0 +1,3 @@
+NO TESTCASE: 37
+SKENARIO: Permohonan: Submit waktu invalid
+HASIL: Menampilkan alert "Validasi Gagal!" karena format waktu salah.

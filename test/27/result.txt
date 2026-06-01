@@ -1,0 +1,3 @@
+NO TESTCASE: 27
+SKENARIO: Keranjang: Tambah form kosong
+HASIL: Menghasilkan Database Exception / Laravel error page karena field jumlah kosong.

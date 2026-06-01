@@ -29,6 +29,16 @@
             </script>
         @endif
 
+        @if ($errors->any())
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validasi Gagal!',
+                    html: '{!! implode("<br>", $errors->all()) !!}',
+                });
+            </script>
+        @endif
+
         <div class="mb-6 text-2xl font-bold text-gray-800">
             Pengembalian
         </div>

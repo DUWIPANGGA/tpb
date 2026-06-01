@@ -94,10 +94,10 @@ class TransaksiController extends ApiController
             $payload = $request->validate([
                 'unit_kerja' => ['nullable', 'string', 'max:255'],
                 'nama_kegiatan' => ['required', 'string', 'max:255'],
-                'hari_atau_tanggal' => ['required', 'date'],
+                'hari_atau_tanggal' => ['required', 'date', 'after_or_equal:today'],
                 'waktu_mulai' => ['required', 'date_format:H:i'],
                 'waktu_selesai' => ['required', 'date_format:H:i'],
-                'phone' => ['required', 'string', 'max:30'],
+                'phone' => ['required', 'string', 'max:30', 'regex:/^[0-9+\-\s]+$/'],
             ]);
         } catch (ValidationException $e) {
             return $this->error('Validasi gagal.', $e->errors());
@@ -112,7 +112,7 @@ class TransaksiController extends ApiController
             ->get();
 
         if ($keranjangItems->isEmpty()) {
-            return $this->error('Keranjang kosong.', [], 422);
+            return $this->error('Keranjang kosong.', [], 400);
         }
 
         DB::beginTransaction();

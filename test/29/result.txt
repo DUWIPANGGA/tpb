@@ -1,0 +1,11 @@
+NO TESTCASE: 29
+SKENARIO: Keranjang: Update tidak ditemukan
+RESPONSE: {
+  "status": 404,
+  "body": {
+    "success": false,
+    "message": "Item keranjang tidak ditemukan.",
+    "errors": [],
+    "server_time": "2026-05-29T20:48:25+07:00"
+  }
+}

@@ -1,0 +1,3 @@
+NO TESTCASE: 32
+SKENARIO: Permohonan: List gagal tanpa token
+HASIL: Dialihkan ke login page.

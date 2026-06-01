@@ -1,0 +1,3 @@
+NO TESTCASE: 28
+SKENARIO: Keranjang: Tambah tanpa token
+HASIL: Akses ditolak dan langsung diarahkan kembali ke halaman login.

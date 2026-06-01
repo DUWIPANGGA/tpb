@@ -1,0 +1,3 @@
+NO TESTCASE: 36
+SKENARIO: Permohonan: Submit tanggal lewat
+HASIL: Menampilkan alert "Validasi Gagal!" karena tanggal di masa lalu.

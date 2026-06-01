@@ -1,0 +1,3 @@
+NO TESTCASE: 26
+SKENARIO: Keranjang: Tambah jumlah invalid
+HASIL: Berhasil mendeteksi stok kurang, menampilkan alert: "Jumlah melebihi stok yang tersedia."

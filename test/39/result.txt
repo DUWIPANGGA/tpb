@@ -1,0 +1,3 @@
+NO TESTCASE: 39
+SKENARIO: Pengembalian: List gagal tanpa token
+HASIL: Akses ditolak dan diarahkan ke login page.

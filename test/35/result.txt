@@ -1,0 +1,3 @@
+NO TESTCASE: 35
+SKENARIO: Permohonan: Submit tanpa token
+HASIL: Aksi ditolak dan diarahkan ke login page.

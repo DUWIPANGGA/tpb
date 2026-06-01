@@ -1,0 +1,3 @@
+NO TESTCASE: 31
+SKENARIO: Keranjang: Delete tanpa token
+HASIL: Aksi hapus ditolak dan diarahkan ke login page.

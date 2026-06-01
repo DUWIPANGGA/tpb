@@ -9,6 +9,24 @@
             });
         </script>
     @endif
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+            });
+        </script>
+    @endif
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Validasi Gagal!',
+                html: '{!! implode("<br>", $errors->all()) !!}',
+            });
+        </script>
+    @endif
     <div class="max-w-screen-xl px-4 py-6 mx-auto">
         <div class="space-y-5">
             <div class="mb-6 text-2xl font-bold text-gray-800">

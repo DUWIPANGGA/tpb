@@ -17,6 +17,6 @@ class DashboardController extends Controller
         $barang = Barang::count();
         $peminjaman = Permohonan::where('status', 'Menunggu')->count();
         $pengembalian = Pengembalian::where('status_pengembalian', 'Menunggu')->count();
-        return view('Pages.Admin.Dashboard.index', compact('pengguna', 'barang', 'peminjaman', 'pengembalian'));
+        return view('pages.admin.dashboard.index', compact('pengguna', 'barang', 'peminjaman', 'pengembalian'));
     }
 }
