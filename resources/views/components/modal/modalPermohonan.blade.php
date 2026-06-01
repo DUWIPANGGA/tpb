@@ -46,7 +46,7 @@
                                     <i class="fa-solid fa-clipboard-list"></i>
                                 </div>
                                 <input type="text" id="nama_kegiatan" name="nama_kegiatan"
-                                    placeholder="Contoh: Seminar Proker"
+                                    placeholder="Contoh: Seminar Proker" required
                                     class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-700 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none" />
                             </div>
                         </div>
@@ -61,7 +61,7 @@
                                     class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                                     <i class="fa-solid fa-calendar-days"></i>
                                 </div>
-                                <input type="date" id="hari_atau_tanggal" name="hari_atau_tanggal"
+                                <input type="date" id="hari_atau_tanggal" name="hari_atau_tanggal" required
                                     class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-700 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none" />
                             </div>
                         </div>
@@ -74,7 +74,7 @@
                                     class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                                     <i class="fa-regular fa-clock"></i>
                                 </div>
-                                <input type="time" id="waktu_mulai" name="waktu_mulai" placeholder="Pilih jam mulai"
+                                <input type="time" id="waktu_mulai" name="waktu_mulai" placeholder="Pilih jam mulai" required
                                     class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-700 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none" />
                             </div>
                         </div>
@@ -88,7 +88,7 @@
                                     <i class="fa-regular fa-clock"></i>
                                 </div>
                                 <input type="time" id="waktu_selesai" name="waktu_selesai"
-                                    placeholder="Pilih jam selesai"
+                                    placeholder="Pilih jam selesai" required
                                     class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-700 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none" />
                             </div>
                         </div>
@@ -118,7 +118,7 @@
                                     class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                                     <i class="fa-solid fa-phone"></i>
                                 </div>
-                                <input type="text" id="phone" name="phone" placeholder="Contoh: 08xxxxxxxxxx"
+                                <input type="text" id="phone" name="phone" placeholder="Contoh: 08xxxxxxxxxx" required
                                     class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-700 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none" />
                             </div>
                         </div>
